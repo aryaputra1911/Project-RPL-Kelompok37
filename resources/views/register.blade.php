@@ -129,8 +129,9 @@
 <!-- FOOTER -->
 <footer class="bg-green-900 text-gray-200 px-10 pt-12 pb-6">
 
-    <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-8">
+    <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-10">
 
+        <!-- LEFT -->
         <div>
             <h3 class="text-white font-bold mb-3">PeakRent</h3>
             <p class="text-sm text-gray-300 leading-relaxed max-w-xs">
@@ -138,6 +139,7 @@
             </p>
         </div>
 
+        <!-- MIDDLE -->
         <div>
             <h3 class="text-white font-semibold mb-3">KATEGORI</h3>
             <ul class="space-y-2 text-sm text-gray-300">
@@ -148,14 +150,41 @@
             </ul>
         </div>
 
+        <!-- RIGHT -->
         <div>
             <h3 class="text-white font-semibold mb-3">KONTAK</h3>
-            <div class="space-y-3 text-sm text-gray-300">
-                <span>halo@peakrent.com</span><br>
-                <span>+62 21 5550 1234</span>
+            <div class="space-y-4 text-sm text-gray-300">
+
+                <div class="flex items-center gap-3 group cursor-pointer hover:text-white transition-colors">
+                    <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-green-700 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0l-9.75 6.75-9.75-6.75" />
+                        </svg>
+                    </div>
+                    <span>halo@peakrent.com</span>
+                </div>
+
+                <div class="flex items-center gap-3 group cursor-pointer hover:text-white transition-colors">
+                    <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center group-hover:bg-green-700 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
+                        </svg>
+                    </div>
+                    <span>+62 21 5550 1234</span>
+                </div>
+
             </div>
         </div>
 
+    </div>
+
+    <!-- LINE -->
+    <div class="border-t border-green-700 mt-10 pt-4 flex justify-between text-xs text-gray-300">
+        <span>© 2026 PeakRent Editorial. The Modern Explorer.</span>
+        <div class="flex gap-6">
+            <span>Kebijakan Privasi</span>
+            <span>Syarat & Ketentuan</span>
+        </div>
     </div>
 
 </footer>
