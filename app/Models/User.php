@@ -41,6 +41,6 @@ class User extends Authenticatable
     public function pemesanan()
     {
         // User mempunyai banyak (hasMany) Pemesanan
-        return $this->hasMany(Pemesanan::class, 'id_user', 'id_user');
+        return $this->hasMany(Pemesanan::class, 'Users_id_user', 'id_user');
     }
 }

@@ -137,8 +137,8 @@
 
                         <!-- Item -->
                         <div class="flex items-center mb-3">
-                            @if($pesanan->alat && $pesanan->alat->gambar)
-                                <img src="{{ asset('storage/' . $pesanan->alat->gambar) }}" alt="Gambar Produk" class="w-16 h-16 object-cover rounded mr-4" onerror="this.src='https://via.placeholder.com/150'">
+                            @if($pesanan->alat && $pesanan->alat->foto)
+                                <img src="{{ asset('storage/' . $pesanan->alat->foto) }}" alt="Gambar Produk" class="w-16 h-16 object-cover rounded mr-4" onerror="this.src='https://via.placeholder.com/150'">
                             @else
                                 <img src="https://via.placeholder.com/150" alt="Gambar Produk" class="w-16 h-16 object-cover rounded mr-4">
                             @endif

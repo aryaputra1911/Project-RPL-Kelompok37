@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -160,14 +160,14 @@
         @include('partials.product-card', [
             'id' => $alat->id_alat,
             'nama' => $alat->nama_alat,
-            'harga' => 'Rp ' . number_format($alat->harga_perhari, 0, ',', '.'),
-            'img' => $alat->gambar ? asset('storage/' . $alat->gambar) : 'https://via.placeholder.com/300',
+            'harga' => 'Rp ' . number_format($alat->harga_per_hari, 0, ',', '.'),
+            'img' => $alat->foto ? asset('storage/' . $alat->foto) : 'https://via.placeholder.com/300',
             'desc' => $alat->deskripsi ?? '',
-            'brand' => $alat->brand ?? '-',
-            'berat' => $alat->berat ?? '-',
-            'material' => $alat->material ?? '-',
+            'brand' => '-',
+            'berat' => '-',
+            'material' => '-',
             'stok' => $alat->stok,
-            'kategori' => $alat->kategori ?? '',
+            'kategori' => '',
         ])
         @endforeach
 

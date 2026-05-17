@@ -6,6 +6,8 @@ use App\Models\Alat;
 use App\Models\Pemesanan;
 use App\Models\Transaksi;
 use App\Models\User;
+use App\Models\Admin;
+use App\Models\DetailPemesanan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -58,7 +60,7 @@ class AdminController extends Controller
         $totalAlat       = Alat::count();
         $totalPesanan    = Pemesanan::count();
         $sewaAktif       = Pemesanan::where('status', 'disewa')->count();
-        $pesananTerbaru  = Pemesanan::with(['user', 'alat', 'transaksi'])
+        $pesananTerbaru  = Pemesanan::with(['user', 'detailPemesanan.alat', 'transaksi'])
                             ->orderBy('created_at', 'desc')
                             ->take(5)
                             ->get();
@@ -66,11 +68,8 @@ class AdminController extends Controller
         // Hitung total pendapatan dari transaksi yang sudah lunas
         $totalPendapatan = Transaksi::where('status_bayar', 'lunas')->sum('total_biaya');
 
-        // Distribusi alat per kategori
-        $kategoriDistribusi = Alat::selectRaw('kategori, COUNT(*) as jumlah')
-                                ->whereNotNull('kategori')
-                                ->groupBy('kategori')
-                                ->get();
+        // Distribusi alat (tanpa kategori, gunakan count total)
+        $kategoriDistribusi = collect();
 
         // Hitung pesanan menunggu konfirmasi
         $menungguKonfirmasi = Pemesanan::where('status', 'menunggu_konfirmasi')->count();
@@ -92,9 +91,7 @@ class AdminController extends Controller
     {
         $query = Alat::query();
 
-        if ($request->filled('kategori')) {
-            $query->where('kategori', $request->kategori);
-        }
+        // Kategori sudah dihapus dari tabel alat
 
         if ($request->filled('search')) {
             $query->where('nama_alat', 'like', '%' . $request->search . '%');
@@ -114,30 +111,21 @@ class AdminController extends Controller
     {
         $request->validate([
             'nama_produk' => 'required|string|max:255',
-            'kategori'    => 'required|string',
             'harga'       => 'required|numeric|min:0',
             'deskripsi'   => 'nullable|string',
-            'brand'       => 'nullable|string|max:255',
-            'berat'       => 'nullable|string|max:255',
-            'material'    => 'nullable|string|max:255',
             'stok'        => 'required|integer|min:0',
             'gambar'      => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
         ]);
 
         $data = [
-            'nama_alat'    => $request->nama_produk,
-            'kategori'     => $request->kategori,
-            'harga'        => $request->harga,
-            'harga_perhari'=> $request->harga,
-            'deskripsi'    => $request->deskripsi,
-            'brand'        => $request->brand,
-            'berat'        => $request->berat,
-            'material'     => $request->material,
-            'stok'         => $request->stok,
+            'nama_alat'     => $request->nama_produk,
+            'harga_per_hari'=> $request->harga,
+            'deskripsi'     => $request->deskripsi,
+            'stok'          => $request->stok,
         ];
 
         if ($request->hasFile('gambar')) {
-            $data['gambar'] = $request->file('gambar')->store('produk', 'public');
+            $data['foto'] = $request->file('gambar')->store('produk', 'public');
         }
 
         Alat::create($data);
@@ -157,32 +145,23 @@ class AdminController extends Controller
 
         $request->validate([
             'nama_produk' => 'required|string|max:255',
-            'kategori'    => 'required|string',
             'harga'       => 'required|numeric|min:0',
             'deskripsi'   => 'nullable|string',
-            'brand'       => 'nullable|string|max:255',
-            'berat'       => 'nullable|string|max:255',
-            'material'    => 'nullable|string|max:255',
             'stok'        => 'required|integer|min:0',
             'gambar'      => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
         ]);
 
         $alat->nama_alat     = $request->nama_produk;
-        $alat->kategori      = $request->kategori;
-        $alat->harga         = $request->harga;
-        $alat->harga_perhari = $request->harga;
+        $alat->harga_per_hari = $request->harga;
         $alat->deskripsi     = $request->deskripsi;
-        $alat->brand         = $request->brand;
-        $alat->berat         = $request->berat;
-        $alat->material      = $request->material;
         $alat->stok          = $request->stok;
 
         if ($request->hasFile('gambar')) {
-            // Hapus gambar lama jika ada
-            if ($alat->gambar && Storage::disk('public')->exists($alat->gambar)) {
-                Storage::disk('public')->delete($alat->gambar);
+            // Hapus foto lama jika ada
+            if ($alat->foto && Storage::disk('public')->exists($alat->foto)) {
+                Storage::disk('public')->delete($alat->foto);
             }
-            $alat->gambar = $request->file('gambar')->store('produk', 'public');
+            $alat->foto = $request->file('gambar')->store('produk', 'public');
         }
 
         $alat->save();
@@ -194,8 +173,8 @@ class AdminController extends Controller
     {
         $alat = Alat::findOrFail($id);
 
-        if ($alat->gambar && Storage::disk('public')->exists($alat->gambar)) {
-            Storage::disk('public')->delete($alat->gambar);
+        if ($alat->foto && Storage::disk('public')->exists($alat->foto)) {
+            Storage::disk('public')->delete($alat->foto);
         }
 
         $alat->delete();
@@ -207,7 +186,7 @@ class AdminController extends Controller
 
     public function pesanan(Request $request)
     {
-        $query = Pemesanan::with(['user', 'alat', 'transaksi']);
+        $query = Pemesanan::with(['user', 'detailPemesanan.alat', 'transaksi']);
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);

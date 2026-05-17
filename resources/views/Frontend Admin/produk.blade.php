@@ -143,9 +143,9 @@
         <div class="grid grid-cols-3 gap-6" id="produkGrid">
 
             @forelse($alats as $alat)
-            <div class="produk-item" data-kategori="{{ $alat->kategori ?? '' }}" data-nama="{{ strtolower($alat->nama_alat) }}">
+            <div class="produk-item" data-kategori="" data-nama="{{ strtolower($alat->nama_alat) }}">
                 <div class="group bg-[#efefe9] rounded-xl shadow overflow-hidden hover:shadow-xl hover:-translate-y-1 transition duration-300">
-                    <img src="{{ $alat->gambar ? asset('storage/' . $alat->gambar) : 'https://via.placeholder.com/400x300?text=No+Image' }}"
+                    <img src="{{ $alat->foto ? asset('storage/' . $alat->foto) : 'https://via.placeholder.com/400x300?text=No+Image' }}"
                         class="w-full h-56 object-cover">
 
                     <div class="p-4">
@@ -155,7 +155,7 @@
                             <div>
                                 <p class="text-xs text-gray-500">MULAI DARI</p>
                                 <p class="text-green-800 font-bold text-lg">
-                                    Rp {{ number_format($alat->harga_perhari, 0, ',', '.') }} <span class="text-sm text-gray-600">/hari</span>
+                                    Rp {{ number_format($alat->harga_per_hari, 0, ',', '.') }} <span class="text-sm text-gray-600">/hari</span>
                                 </p>
                             </div>
 

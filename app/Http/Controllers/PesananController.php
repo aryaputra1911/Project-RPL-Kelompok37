@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Alat;
 use App\Models\Pemesanan;
+use App\Models\DetailPemesanan;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,11 +34,18 @@ class PesananController extends Controller
         ]);
 
         $userId = Auth::id();
-        $pesananIds = [];
 
         DB::beginTransaction();
         try {
             $subtotal = 0;
+
+            // Buat satu pemesanan untuk semua item
+            $pemesanan = Pemesanan::create([
+                'Users_id_user' => $userId,
+                'tgl_sewa'      => $request->tgl_sewa,
+                'tgl_kembali'   => $request->tgl_kembali,
+                'status'        => 'belum_bayar',
+            ]);
 
             foreach ($request->items as $item) {
                 $harga = (int) $item['harga'];
@@ -62,38 +70,35 @@ class PesananController extends Controller
                 // Jika alat tetap tidak ditemukan, buat baru
                 if (!$alat) {
                     $alat = Alat::create([
-                        'nama_alat'     => $item['nama'] ?? 'Produk Tidak Dikenal',
-                        'harga'         => $harga,
-                        'harga_perhari' => $harga,
-                        'stok'          => 99,
+                        'nama_alat'      => $item['nama'] ?? 'Produk Tidak Dikenal',
+                        'harga_per_hari' => $harga,
+                        'stok'           => 99,
                     ]);
                 }
 
-                // Buat pemesanan per item
-                $pemesanan = Pemesanan::create([
-                    'id_user'     => $userId,
-                    'id_alat'     => $alat->id_alat,
-                    'tgl_sewa'    => $request->tgl_sewa,
-                    'tgl_kembali' => $request->tgl_kembali,
-                    'jumlah_alat' => $jumlah,
-                    'status'      => 'belum_bayar',
+                // Buat detail pemesanan per item
+                DetailPemesanan::create([
+                    'Pemesanan_id_pesanan'    => $pemesanan->id_pesanan,
+                    'Pemesanan_Users_id_user' => $userId,
+                    'Alat_id_alat'            => $alat->id_alat,
+                    'jumlah'                  => $jumlah,
+                    'subtotal'                => $totalItem,
                 ]);
-
-                // Buat transaksi untuk setiap pesanan
-                Transaksi::create([
-                    'id_pesanan'   => $pemesanan->id_pesanan,
-                    'total_biaya'  => $totalItem,
-                    'status_bayar' => 'belum_bayar',
-                ]);
-
-                $pesananIds[] = $pemesanan->id_pesanan;
             }
+
+            // Buat satu transaksi untuk pemesanan
+            Transaksi::create([
+                'id_pesanan'              => $pemesanan->id_pesanan,
+                'total_biaya'             => $subtotal,
+                'status_bayar'            => 'belum_bayar',
+                'Pemesanan_Users_id_user' => $userId,
+            ]);
 
             DB::commit();
 
             return response()->json([
                 'message'      => 'Checkout berhasil!',
-                'pesanan_ids'  => $pesananIds,
+                'pesanan_ids'  => [$pemesanan->id_pesanan],
                 'subtotal'     => $subtotal,
                 'total'        => $subtotal + 5000 + 100000,
             ]);
@@ -123,7 +128,7 @@ class PesananController extends Controller
         try {
             foreach ($request->pesanan_ids as $id) {
                 $pemesanan = Pemesanan::where('id_pesanan', $id)
-                    ->where('id_user', $userId)
+                    ->where('Users_id_user', $userId)
                     ->where('status', 'belum_bayar')
                     ->firstOrFail();
 
@@ -158,8 +163,8 @@ class PesananController extends Controller
     {
         $pesanans = collect();
         if (Auth::check()) {
-            $pesanans = Pemesanan::where('id_user', Auth::id())
-                ->with(['alat', 'transaksi'])
+            $pesanans = Pemesanan::where('Users_id_user', Auth::id())
+                ->with(['detailPemesanan.alat', 'transaksi'])
                 ->orderBy('created_at', 'desc')
                 ->get();
         }
@@ -173,9 +178,9 @@ class PesananController extends Controller
     {
         $pesanansBelumBayar = collect();
         if (Auth::check()) {
-            $pesanansBelumBayar = Pemesanan::where('id_user', Auth::id())
+            $pesanansBelumBayar = Pemesanan::where('Users_id_user', Auth::id())
                 ->where('status', 'belum_bayar')
-                ->with(['alat', 'transaksi'])
+                ->with(['detailPemesanan.alat', 'transaksi'])
                 ->orderBy('created_at', 'desc')
                 ->get();
         }

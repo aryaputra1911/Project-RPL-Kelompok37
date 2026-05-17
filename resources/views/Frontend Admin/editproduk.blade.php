@@ -99,7 +99,7 @@
             <div class="lg:col-span-2">
 
                 <img id="previewGambar"
-                     src="{{ $alat->gambar ? asset('storage/' . $alat->gambar) : 'https://via.placeholder.com/400x360?text=No+Image' }}"
+                     src="{{ $alat->foto ? asset('storage/' . $alat->foto) : 'https://via.placeholder.com/400x360?text=No+Image' }}"
                      class="w-full h-[360px] object-cover rounded-lg">
 
                 <div class="grid grid-cols-2 gap-4 mt-6">
@@ -138,30 +138,14 @@
                             value="{{ old('nama_produk', $alat->nama_alat) }}"
                             class="w-full mt-2 mb-5 p-3 rounded bg-[#e3e4dc] outline-none text-sm">
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="text-xs font-bold text-gray-700 tracking-wide">
-                                    KATEGORI
-                                </label>
+                        <div>
+                            <label class="text-xs font-bold text-gray-700 tracking-wide">
+                                HARGA (PER HARI)
+                            </label>
 
-                                <select name="kategori"
-                                    class="w-full mt-2 p-3 rounded bg-[#e3e4dc] outline-none text-sm text-gray-700">
-                                    <option value="tenda" {{ old('kategori', $alat->kategori) == 'tenda' ? 'selected' : '' }}>Tenda &amp; Camping</option>
-                                    <option value="tas" {{ old('kategori', $alat->kategori) == 'tas' ? 'selected' : '' }}>Tas &amp; Carrier</option>
-                                    <option value="pakaian" {{ old('kategori', $alat->kategori) == 'pakaian' ? 'selected' : '' }}>Pakaian Gunung</option>
-                                    <option value="aksesoris" {{ old('kategori', $alat->kategori) == 'aksesoris' ? 'selected' : '' }}>Aksesoris &amp; Gear</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="text-xs font-bold text-gray-700 tracking-wide">
-                                    HARGA (PER HARI)
-                                </label>
-
-                                <input type="number" name="harga"
-                                    value="{{ old('harga', $alat->harga_perhari) }}"
-                                    class="w-full mt-2 p-3 rounded bg-[#e3e4dc] outline-none text-sm">
-                            </div>
+                            <input type="number" name="harga"
+                                value="{{ old('harga', $alat->harga_per_hari) }}"
+                                class="w-full mt-2 p-3 rounded bg-[#e3e4dc] outline-none text-sm">
                         </div>
                     </div>
                 </div>
@@ -179,47 +163,7 @@
                     </div>
                 </div>
 
-                <!-- DETAIL SPESIFIKASI -->
-                <div class="mb-8">
-                    <div class="flex items-center gap-2 text-green-800 font-bold text-sm mb-3">
-                        <span>&#9783;</span>
-                        <h2>DETAIL SPESIFIKASI</h2>
-                    </div>
 
-                    <div class="border-t border-gray-300 pt-5">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <label class="text-xs font-bold text-gray-700 tracking-wide">
-                                    BRAND
-                                </label>
-
-                                <input type="text" name="brand"
-                                    value="{{ old('brand', $alat->brand) }}"
-                                    class="w-full mt-2 p-3 rounded bg-[#e3e4dc] outline-none text-sm">
-                            </div>
-
-                            <div>
-                                <label class="text-xs font-bold text-gray-700 tracking-wide">
-                                    BERAT
-                                </label>
-
-                                <input type="text" name="berat"
-                                    value="{{ old('berat', $alat->berat) }}"
-                                    class="w-full mt-2 p-3 rounded bg-[#e3e4dc] outline-none text-sm">
-                            </div>
-
-                            <div>
-                                <label class="text-xs font-bold text-gray-700 tracking-wide">
-                                    MATERIAL
-                                </label>
-
-                                <input type="text" name="material"
-                                    value="{{ old('material', $alat->material) }}"
-                                    class="w-full mt-2 p-3 rounded bg-[#e3e4dc] outline-none text-sm">
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- KELOLA STOK -->
                 <div>

@@ -173,31 +173,14 @@
                             placeholder="Masukkan nama produk"
                             class="w-full mt-2 mb-5 p-3 rounded bg-[#e3e4dc] outline-none text-sm">
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="text-xs font-bold text-gray-700 tracking-wide">
-                                    KATEGORI
-                                </label>
+                        <div>
+                            <label class="text-xs font-bold text-gray-700 tracking-wide">
+                                HARGA (PER HARI)
+                            </label>
 
-                                <select name="kategori"
-                                    class="w-full mt-2 p-3 rounded bg-[#e3e4dc] outline-none text-sm text-gray-500">
-                                    <option value="">Pilih kategori</option>
-                                    <option value="tenda" {{ old('kategori') == 'tenda' ? 'selected' : '' }}>Tenda &amp; Camping</option>
-                                    <option value="tas" {{ old('kategori') == 'tas' ? 'selected' : '' }}>Tas &amp; Carrier</option>
-                                    <option value="pakaian" {{ old('kategori') == 'pakaian' ? 'selected' : '' }}>Pakaian Gunung</option>
-                                    <option value="aksesoris" {{ old('kategori') == 'aksesoris' ? 'selected' : '' }}>Aksesoris &amp; Gear</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="text-xs font-bold text-gray-700 tracking-wide">
-                                    HARGA (PER HARI)
-                                </label>
-
-                                <input type="number" name="harga" value="{{ old('harga') }}"
-                                    placeholder="Contoh: 20000"
-                                    class="w-full mt-2 p-3 rounded bg-[#e3e4dc] outline-none text-sm">
-                            </div>
+                            <input type="number" name="harga" value="{{ old('harga') }}"
+                                placeholder="Contoh: 20000"
+                                class="w-full mt-2 p-3 rounded bg-[#e3e4dc] outline-none text-sm">
                         </div>
                     </div>
                 </div>
@@ -216,47 +199,7 @@
                     </div>
                 </div>
 
-                <!-- DETAIL SPESIFIKASI -->
-                <div class="mb-8">
-                    <div class="flex items-center gap-2 text-green-800 font-bold text-sm mb-3">
-                        <span>&#9783;</span>
-                        <h2>DETAIL SPESIFIKASI</h2>
-                    </div>
 
-                    <div class="border-t border-gray-300 pt-5">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <label class="text-xs font-bold text-gray-700 tracking-wide">
-                                    BRAND
-                                </label>
-
-                                <input type="text" name="brand" value="{{ old('brand') }}"
-                                    placeholder="Contoh: Eiger"
-                                    class="w-full mt-2 p-3 rounded bg-[#e3e4dc] outline-none text-sm">
-                            </div>
-
-                            <div>
-                                <label class="text-xs font-bold text-gray-700 tracking-wide">
-                                    BERAT (KG)
-                                </label>
-
-                                <input type="text" name="berat" value="{{ old('berat') }}"
-                                    placeholder="Contoh: 3.5"
-                                    class="w-full mt-2 p-3 rounded bg-[#e3e4dc] outline-none text-sm">
-                            </div>
-
-                            <div>
-                                <label class="text-xs font-bold text-gray-700 tracking-wide">
-                                    MATERIAL
-                                </label>
-
-                                <input type="text" name="material" value="{{ old('material') }}"
-                                    placeholder="Contoh: Rip Nylon"
-                                    class="w-full mt-2 p-3 rounded bg-[#e3e4dc] outline-none text-sm">
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- KELOLA STOK -->
                 <div>
