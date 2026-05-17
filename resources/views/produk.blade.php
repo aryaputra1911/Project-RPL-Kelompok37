@@ -1,37 +1,71 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Panduan Sewa - PeakRent</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-[#f4f4ef]">
+<body class="bg-[#f4f4ef]" style="font-family: 'Poppins', sans-serif;">
+
 
 <!-- NAVBAR -->
 <nav class="flex justify-between items-center px-10 py-4 bg-white border-b">
-    <h1 class="text-green-700 font-bold text-lg">PeakRent</h1>
+    <h1 class="text-green-700 font-bold text-lg"><a href="{{ url('/') }}">PeakRent</a></h1>
 
     <ul class="flex gap-8 text-gray-600 font-medium">
-        <li><a href="/" class="hover:text-green-700">Beranda</a></li>
-        <li><a href="/produk" class="hover:text-green-700">Produk</a></li>
-        <li><a href="/panduan" class="hover:text-green-700">Panduan Sewa</a></li>
+        <li><a href="{{ url('/') }}" class="hover:text-green-700">Beranda</a></li>
+        <li><a href="{{ url('/produk') }}" class="hover:text-green-700">Produk</a></li>
+        <li><a href="{{ url('/panduan') }}" class="hover:text-green-700">Panduan Sewa</a></li>
+        @auth
+        <li><a href="{{ url('/pesanan') }}" class="hover:text-green-700">Pesanan</a></li>
+        @endauth
     </ul>
 
-    <div class="flex gap-4">
+    <div class="flex gap-4 items-center">
         <!-- cart -->
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 4h14m-6 0a2 2 0 11-4 0m4 0a2 2 0 104 0"/>
-        </svg>
+        <a href="{{ url('/keranjang') }}" class="relative cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 4h14m-6 0a2 2 0 11-4 0m4 0a2 2 0 104 0"/>
+            </svg>
+            <span id="cartCount" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] px-1.5 py-[1px] rounded-full" style="display: none;">0</span>
+        </a>
 
         <!-- user -->
-        <a href="/login" class="text-green-700 hover:text-green-900 transition -mt-1">
+        @auth
+        <div class="flex items-center gap-3 relative">
+            <div onclick="this.nextElementSibling.classList.toggle('hidden')" class="flex items-center gap-3 cursor-pointer">
+                <span class="text-sm text-gray-700">{{ Auth::user()->nama }}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7 text-green-700 hover:text-green-900 transition">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                </svg>
+            </div>
+            <div class="hidden absolute top-10 right-0 w-48 bg-white rounded-2xl shadow-xl p-3 border z-50">
+                <div class="flex items-center gap-3 pb-3">
+                    <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600">ðŸ‘¤</div>
+                    <div class="leading-tight">
+                        <p class="font-semibold text-[13px] text-gray-800">{{ Auth::user()->nama }}</p>
+                        <p class="text-[11px] text-gray-500">{{ Auth::user()->email }}</p>
+                    </div>
+                </div>
+                <hr class="mb-2">
+                <a href="{{ url('/pesanan') }}" class="flex items-center gap-2 text-sm text-gray-700 py-2 mb-3">â†º Riwayat Pesanan</a>
+                <form method="POST" action="{{ url('/logout') }}">
+                    @csrf
+                    <button class="w-full bg-green-800 hover:bg-green-900 text-white py-2 rounded-lg text-sm font-medium">Keluar</button>
+                </form>
+            </div>
+        </div>
+        @else
+        <a href="{{ url('/login') }}" class="text-green-700 hover:text-green-900 transition -mt-1">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
             </svg>
         </a>
+        @endauth
     </div>
 </nav>
 
@@ -49,7 +83,7 @@
             <div class="flex flex-col w-40">
                 <label class="text-[10px] font-bold text-slate-800 tracking-wider mb-2 text-center">DURASI (HARI)</label>
                 <div class="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
-                    <button type="button" onclick="ubahDurasi(-1)" class="text-slate-800 font-bold text-xl">−</button>
+                    <button type="button" onclick="ubahDurasi(-1)" class="text-slate-800 font-bold text-xl"></button>
                     <input id="inputDurasi" type="number" value="1" min="1" class="bg-transparent w-10 text-center font-bold text-slate-800 outline-none">
                     <button type="button" onclick="ubahDurasi(1)" class="text-slate-800 font-bold text-xl">+</button>
                 </div>
@@ -123,544 +157,42 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
     
         @foreach($alats as $alat)
-        <a href="#" onclick="openModal(this); return false;" class="produk-item group" 
-            data-id="{{ $alat->id_alat }}"
-            data-nama="{{ $alat->nama_alat }}"
-            data-harga="Rp {{ number_format($alat->harga_perhari, 0, ',', '.') }}"
-            data-img="{{ $alat->gambar ? asset('storage/' . $alat->gambar) : 'https://via.placeholder.com/300' }}">
-            
-            <div class="bg-[#F1F1EF] rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500">
-                <div class="h-60 w-full overflow-hidden">
-                    <img src="{{ $alat->gambar ? asset('storage/' . $alat->gambar) : 'https://via.placeholder.com/300' }}"
-                        class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
-                </div>
-                <div class="p-6">
-                    <h3 class="font-bold text-gray-800 mb-4 h-12 overflow-hidden">{{ $alat->nama_alat }}</h3>
-                    <div class="flex justify-between items-end">
-                        <div>
-                            <p class="text-[10px] font-bold text-gray-400">MULAI DARI</p>
-                            <p class="text-[#064E3B] font-extrabold text-xl">
-                                Rp {{ number_format($alat->harga_perhari, 0, ',', '.') }}<span class="text-xs text-gray-500"> /hari</span>
-                            </p>
-                        </div>
-                        <div class="bg-[#064E3B] p-3 rounded-xl text-white">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                <path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </a>
+        @include('partials.product-card', [
+            'id' => $alat->id_alat,
+            'nama' => $alat->nama_alat,
+            'harga' => 'Rp ' . number_format($alat->harga_perhari, 0, ',', '.'),
+            'img' => $alat->gambar ? asset('storage/' . $alat->gambar) : 'https://via.placeholder.com/300',
+            'desc' => $alat->deskripsi ?? '',
+            'brand' => $alat->brand ?? '-',
+            'berat' => $alat->berat ?? '-',
+            'material' => $alat->material ?? '-',
+            'stok' => $alat->stok,
+            'kategori' => $alat->kategori ?? '',
+        ])
         @endforeach
 
-</a>
+        @include('partials.product-card', ['nama'=>'Tenda Tunnel 5-6P','harga'=>'Rp 70.000','img'=>'https://areioutdoorgear.co.id/wp-content/uploads/2023/11/WhatsApp-Image-2024-02-02-at-09.49.27-2.jpeg','desc'=>'Tenda dome kapasitas 4 orang dari Eiger yang dirancang praktis dan ringan untuk kegiatan camping maupun pendakian. Dilengkapi material waterproof dengan lapisan double layer untuk perlindungan optimal dari hujan dan angin.','brand'=>'Eiger','berat'=>'4.2 kg','material'=>'Polyester dan PU Coating','stok'=>'5','kategori'=>'tenda'])
 
-    <!-- Tenda Tunnel-->
-    <a href="#" 
-        onclick="openModal(this)"
-        class="produk-item"
-        data-kategori="tenda"
+        @include('partials.product-card', ['nama'=>'Carrier 40L Pro-Series','harga'=>'Rp 45.000','img'=>'https://areioutdoorgear.co.id/wp-content/uploads/2023/06/WhatsApp-Image-2023-06-02-at-12.42.02.jpeg','desc'=>'Carrier 40L Pro-Series yang dirancang ergonomis dan nyaman digunakan untuk pendakian jarak pendek hingga menengah.','brand'=>'ARei','berat'=>'900 Gram','material'=>'Rip Nylon Water Resistant','stok'=>'10','kategori'=>'tas'])
 
-        data-nama="Tenda Tunnel 5-6P"
-        data-harga="Rp 70.000"
-        data-img="https://areioutdoorgear.co.id/wp-content/uploads/2023/11/WhatsApp-Image-2024-02-02-at-09.49.27-2.jpeg"
-        data-desc="Tenda dome kapasitas 4 orang dari Eiger yang dirancang praktis dan ringan untuk kegiatan camping maupun pendakian. Dilengkapi material waterproof dengan lapisan double layer untuk perlindungan optimal dari hujan dan angin. Ventilasi udara yang baik menjaga kenyamanan di dalam tenda agar tidak lembap. Cocok digunakan untuk solo trip hingga kelompok kecil yang mengutamakan efisiensi dan kenyamanan."
-        data-brand="Eiger"
-        data-berat="4.2 kg"
-        data-material="Polyester dan PU Coating "
-        data-stok="5">
+        @include('partials.product-card', ['nama'=>'Carrier 60L Pro-Series','harga'=>'Rp 55.000','img'=>'https://areioutdoorgear.co.id/wp-content/uploads/2025/08/WhatsApp-Image-2025-06-19-at-11.16.56-2.jpeg','desc'=>'Carrier 60L Pro-Series yang dirancang ergonomis dan nyaman digunakan untuk pendakian jarak pendek hingga menengah.','brand'=>'ARei','berat'=>'1.5 Kg','material'=>'Rip Nylon Water Resistant','stok'=>'10','kategori'=>'tas'])
 
-    <div class="group bg-[#efefe9] rounded-xl shadow overflow-hidden 
-        hover:shadow-xl hover:-translate-y-1 
-        transition duration-300">
-            <img src="https://areioutdoorgear.co.id/wp-content/uploads/2023/11/WhatsApp-Image-2024-02-02-at-09.49.27-2.jpeg"
-                 class="w-full h-56 object-cover">
+        @include('partials.product-card', ['nama'=>'Jaket Outdoor Credifox Shield Series','harga'=>'Rp 30.000','img'=>'https://cdn-jpr.jawapos.com/images/27/2025/05/29/N01777-GORPCORE-Jacket-_-Distro-Motif-Parachute-Mountain-Jacket-1611688820.jpeg','desc'=>'Jaket outdoor Credifox Shield Series, ringan dan nyaman, dilengkapi fitur water repellent untuk melindungi dari angin dan suhu dingin saat aktivitas luar ruang.','brand'=>'Credifox','berat'=>'800 gram','material'=>'Polyester Taslan + Water Repellent','stok'=>'9','kategori'=>'pakaian'])
 
-            <div class="p-4">
-                <h3 class="font-semibold text-gray-800 mb-2">Tenda Tunnel 5-6P</h3>
+        @include('partials.product-card', ['nama'=>'Sepatu Tracking Waterproof','harga'=>'Rp 40.000','img'=>'https://ik.imagekit.io/tvlk/blog/2024/12/shutterstock_2083482538.jpg?tr=q-70,c-at_max,w-1000,h-600','desc'=>'Sepatu tracking waterproof Keen dengan desain kokoh dan perlindungan maksimal untuk aktivitas outdoor di berbagai medan.','brand'=>'Keen','berat'=>'1.5 Kg','material'=>'Upper sintetis + mesh breathable','stok'=>'5','kategori'=>'pakaian'])
 
-                <div class="flex justify-between items-end">
-                    <div>
-                        <p class="text-xs text-gray-500">MULAI DARI</p>
-                        <p class="text-green-800 font-bold text-lg">
-                            Rp 70.000 <span class="text-sm text-gray-600">/hari</span>
-                        </p>
-                    </div>
+        @include('partials.product-card', ['nama'=>'Kompor Portable','harga'=>'Rp 35.000','img'=>'https://static.retailworldvn.com/Products/Images/12226/325027/kompor-gas-portable-niko-nk-268c-violet-1.jpg','desc'=>'Kompor Gas Portable Niko NK-268C dirancang untuk memberikan fleksibilitas.','brand'=>'Niko','berat'=>'950 Gram','material'=>'Material plate berenamel + Pemantik Piezoelectric','stok'=>'5','kategori'=>'tenda'])
 
-                <div onclick="event.stopPropagation(); tambahDariCard(this)" class="bg-green-800 p-3 rounded-lg hover:bg-green-900 transition cursor-pointer">
-                     <svg xmlns="http://www.w3.org/2000/svg" 
-                            class="w-6 h-6 text-white" 
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M2.25 2.25h1.386c.51 0 .96.343 1.087.838l.383 1.533m0 0L6.75 12h9.879c.75 0 1.4-.515 1.571-1.244l1.179-5.3a.75.75 0 00-.732-.956H5.106m0 0L4.5 3.75M6 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm12 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
-                     </svg>
-                </div>
-                </div>
-            </div>
-        </div>
-    </a>
+        @include('partials.product-card', ['nama'=>'Headlamp LED Outdoor','harga'=>'Rp 10.000','img'=>'https://img.id.my-best.com/product_images/bb8e9e53b02e76fff46bea9176bcbfd9.jpeg','desc'=>'Headlamp LED outdoor yang praktis dan ringan digunakan untuk aktivitas malam hari seperti pendakian dan camping.','brand'=>'Eiger','berat'=>'150 gram','material'=>'ABS Plastic + Elastic Strap','stok'=>'8','kategori'=>'aksesoris'])
 
-<!-- Carrier 40L-->
-    <a href="#" 
-        onclick="openModal(this)"
-          class="produk-item"
+        @include('partials.product-card', ['nama'=>'Trekking Pole Adjustable','harga'=>'Rp 20.000','img'=>'https://down-id.img.susercontent.com/file/78a0b7c52ffa8925220e28e40c137c8b','desc'=>'Trekking pole adjustable yang membantu menjaga keseimbangan saat berjalan di medan menanjak maupun menurun.','brand'=>'Haoyang','berat'=>'300 gram','material'=>'Aluminium Alloy','stok'=>'7','kategori'=>'aksesoris'])
 
-        data-nama="Carrier 40L Pro-Series"
-        data-harga="Rp 45.000"
-        data-img="https://areioutdoorgear.co.id/wp-content/uploads/2023/06/WhatsApp-Image-2023-06-02-at-12.42.02.jpeg"
-        data-desc="Carrier 40L Pro-Series yang dirancang ergonomis dan nyaman digunakan untuk pendakian jarak pendek hingga menengah. Memiliki kapasitas cukup luas dengan kompartemen rapi, dilengkapi material kuat dan tahan air serta sistem sirkulasi punggung yang baik agar tetap nyaman saat digunakan dalam waktu lama."
-        data-brand="ARei"
-        data-berat="900 Gram"
-        data-material="Rip Nylon Water Resistant"
-        data-stok="10"
-        data-kategori="tas">
+        @include('partials.product-card', ['nama'=>'Bucket Hat Outdoor','harga'=>'Rp 10.000','img'=>'https://img.lazcdn.com/g/p/24101af3be6c1a8bcb494c51d429993c.jpg_720x720q80.jpg','desc'=>'Bucket hat outdoor yang ringan dan nyaman digunakan untuk melindungi dari sinar matahari saat aktivitas di luar ruangan.','brand'=>'The North Face','berat'=>'100 gram','material'=>'Cotton Twill','stok'=>'20','kategori'=>'pakaian'])
 
-        <div class="group bg-[#efefe9] rounded-xl shadow overflow-hidden 
-            hover:shadow-xl hover:-translate-y-1 
-            transition duration-300">
-            <img src="https://areioutdoorgear.co.id/wp-content/uploads/2023/06/WhatsApp-Image-2023-06-02-at-12.42.02.jpeg"
-                 class="w-full h-56 object-cover">
+        @include('partials.product-card', ['nama'=>'Kompas Outdoor','harga'=>'Rp 10.000','img'=>'https://image.made-in-china.com/365f3j00fzyiDWRPvgpe/Penggaris-Skala-Peta-Bacaan-Outdoor-Pengukuran-Kompas-dengan-Tali-untuk-Berkemah-Mendaki.webp','desc'=>'Kompas outdoor yang praktis dan akurat untuk membantu navigasi saat pendakian maupun kegiatan alam terbuka.','brand'=>'Brunton','berat'=>'150 gram','material'=>'Akrilik + Magnet Presisi','stok'=>'30','kategori'=>'aksesoris'])
 
-            <div class="p-4">
-                <h3 class="font-semibold text-gray-800 mb-2">Carrier 40L Pro-Series</h3>
+        @include('partials.product-card', ['nama'=>'Celana Cargo Pria','harga'=>'Rp 25.000','img'=>'https://www.eigeradventure.com/blog/wp-content/uploads/2025/10/Outland-X28-Pro.jpeg','desc'=>'Celana cargo pria untuk aktivitas outdoor dan pendakian gunung.','brand'=>'Eiger','berat'=>'350 gram','material'=>'Cotton Canvas','stok'=>'30','kategori'=>'pakaian'])
 
-                <div class="flex justify-between items-end">
-                    <div>
-                        <p class="text-xs text-gray-500">MULAI DARI</p>
-                        <p class="text-green-800 font-bold text-lg">
-                            Rp 45.000 <span class="text-sm text-gray-600">/hari</span>
-                        </p>
-                    </div>
-
-                  <div onclick="event.stopPropagation(); tambahDariCard(this)" class="bg-green-800 p-3 rounded-lg hover:bg-green-900 transition cursor-pointer">
-                         <svg xmlns="http://www.w3.org/2000/svg" 
-                            class="w-6 h-6 text-white" 
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M2.25 2.25h1.386c.51 0 .96.343 1.087.838l.383 1.533m0 0L6.75 12h9.879c.75 0 1.4-.515 1.571-1.244l1.179-5.3a.75.75 0 00-.732-.956H5.106m0 0L4.5 3.75M6 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm12 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </a>
-
-    <!-- Carrier 60L-->
-   <a href="#" 
-        onclick="openModal(this)"
-          class="produk-item"
-
-        data-nama="Carrier 60L Pro-Series"
-        data-harga="Rp 55.000"
-        data-img="https://areioutdoorgear.co.id/wp-content/uploads/2025/08/WhatsApp-Image-2025-06-19-at-11.16.56-2.jpeg"
-        data-desc="Carrier 60L Pro-Series yang dirancang ergonomis dan nyaman digunakan untuk pendakian jarak pendek hingga menengah. Memiliki kapasitas cukup luas dengan kompartemen rapi, dilengkapi material kuat dan tahan air serta sistem sirkulasi punggung yang baik agar tetap nyaman saat digunakan dalam waktu lama."
-        data-brand="ARei"
-        data-berat="1.5 Kg"
-        data-material="Rip Nylon Water Resistant"
-        data-stok="10"
-        data-kategori="tas">
-
-        <div class="group bg-[#efefe9] rounded-xl shadow overflow-hidden 
-            hover:shadow-xl hover:-translate-y-1 
-            transition duration-300">
-            <img src="https://areioutdoorgear.co.id/wp-content/uploads/2025/08/WhatsApp-Image-2025-06-19-at-11.16.56-2.jpeg"
-                 class="w-full h-56 object-cover">
-
-            <div class="p-4">
-                <h3 class="font-semibold text-gray-800 mb-2">Carrier 60L Pro-Series</h3>
-
-                <div class="flex justify-between items-end">
-                    <div>
-                        <p class="text-xs text-gray-500">MULAI DARI</p>
-                        <p class="text-green-800 font-bold text-lg">
-                            Rp 55.000 <span class="text-sm text-gray-600">/hari</span>
-                        </p>
-                    </div>
-
-                    <div onclick="event.stopPropagation(); tambahDariCard(this)" class="bg-green-800 p-3 rounded-lg hover:bg-green-900 transition cursor-pointer">
-                         <svg xmlns="http://www.w3.org/2000/svg" 
-                            class="w-6 h-6 text-white" 
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M2.25 2.25h1.386c.51 0 .96.343 1.087.838l.383 1.533m0 0L6.75 12h9.879c.75 0 1.4-.515 1.571-1.244l1.179-5.3a.75.75 0 00-.732-.956H5.106m0 0L4.5 3.75M6 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm12 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </a>
-
-    <!-- Jaket -->
-        <a href="#" 
-            onclick="openModal(this); return false;"
-              class="produk-item"
-
-            data-nama="Jaket Outdoor Credifox Shield Series"
-            data-harga="Rp 30.000"
-            data-img="https://cdn-jpr.jawapos.com/images/27/2025/05/29/N01777-GORPCORE-Jacket-_-Distro-Motif-Parachute-Mountain-Jacket-1611688820.jpeg"
-            data-desc="Jaket outdoor Credifox Shield Series, ringan dan nyaman, dilengkapi fitur water repellent untuk melindungi dari angin dan suhu dingin saat aktivitas luar ruang."
-            data-brand="Credifox"
-            data-berat="800 gram"
-            data-material="Polyester Taslan + Water Repellent"
-            data-stok="9"
-            data-kategori="pakaian">
-
-        <div class="group bg-[#efefe9] rounded-xl shadow overflow-hidden 
-            hover:shadow-xl hover:-translate-y-1 
-            transition duration-300">
-            <img src="https://cdn-jpr.jawapos.com/images/27/2025/05/29/N01777-GORPCORE-Jacket-_-Distro-Motif-Parachute-Mountain-Jacket-1611688820.jpeg"
-                 class="w-full h-56 object-cover">
-
-            <div class="p-4">
-                <h3 class="font-semibold text-gray-800 mb-2">Jaket Outdoor Credifox Shield Series </h3>
-
-                <div class="flex justify-between items-end">
-                    <div>
-                        <p class="text-xs text-gray-500">MULAI DARI</p>
-                        <p class="text-green-800 font-bold text-lg">
-                            Rp 30.000 <span class="text-sm text-gray-600">/hari</span>
-                        </p>
-                    </div>
-
-                    <div onclick="event.stopPropagation(); tambahDariCard(this)" class="bg-green-800 p-3 rounded-lg hover:bg-green-900 transition cursor-pointer">
-                         <svg xmlns="http://www.w3.org/2000/svg" 
-                            class="w-6 h-6 text-white" 
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M2.25 2.25h1.386c.51 0 .96.343 1.087.838l.383 1.533m0 0L6.75 12h9.879c.75 0 1.4-.515 1.571-1.244l1.179-5.3a.75.75 0 00-.732-.956H5.106m0 0L4.5 3.75M6 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm12 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </a>
-
-    <!-- Sepatu -->
-    <a href="#" 
-            onclick="openModal(this); return false;"
-              class="produk-item"
-
-            data-nama="Sepatu Tracking Waterproof"
-            data-harga="Rp 40.000"
-            data-img="https://ik.imagekit.io/tvlk/blog/2024/12/shutterstock_2083482538.jpg?tr=q-70,c-at_max,w-1000,h-600"
-            data-desc="Sepatu tracking waterproof Keen dengan desain kokoh dan perlindungan maksimal untuk aktivitas outdoor di berbagai medan. Menggunakan material tahan air yang menjaga kaki tetap kering, dilengkapi sol grip kuat agar stabil di permukaan licin, serta bantalan empuk yang memberikan kenyamanan saat digunakan dalam perjalanan panjang."
-            data-brand="Keen"
-            data-berat="1.5 Kg"
-            data-material="Upper sintetis + mesh breathable"
-            data-stok="5"
-            data-kategori="pakaian">
-
-        <div class="group bg-[#efefe9] rounded-xl shadow overflow-hidden 
-            hover:shadow-xl hover:-translate-y-1 
-            transition duration-300">
-            <img src="https://ik.imagekit.io/tvlk/blog/2024/12/shutterstock_2083482538.jpg?tr=q-70,c-at_max,w-1000,h-600"
-                 class="w-full h-56 object-cover">
-
-            <div class="p-4">
-                <h3 class="font-semibold text-gray-800 mb-2">Sepatu Tracking Waterproof</h3>
-
-                <div class="flex justify-between items-end">
-                    <div>
-                        <p class="text-xs text-gray-500">MULAI DARI</p>
-                        <p class="text-green-800 font-bold text-lg">
-                            Rp 40.000 <span class="text-sm text-gray-600">/hari</span>
-                        </p>
-                    </div>
-
-                  <div onclick="event.stopPropagation(); tambahDariCard(this)" class="bg-green-800 p-3 rounded-lg hover:bg-green-900 transition cursor-pointer">
-                         <svg xmlns="http://www.w3.org/2000/svg" 
-                            class="w-6 h-6 text-white" 
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M2.25 2.25h1.386c.51 0 .96.343 1.087.838l.383 1.533m0 0L6.75 12h9.879c.75 0 1.4-.515 1.571-1.244l1.179-5.3a.75.75 0 00-.732-.956H5.106m0 0L4.5 3.75M6 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm12 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </a>
-
-    <!-- Kompor -->
-    <a href="#" 
-            onclick="openModal(this); return false;"
-              class="produk-item"
-
-            data-nama="Kompor Portable"
-            data-harga="Rp 35.000"
-            data-img="https://static.retailworldvn.com/Products/Images/12226/325027/kompor-gas-portable-niko-nk-268c-violet-1.jpg"
-            data-desc="Kompor Gas Portable Niko NK-268C dirancang untuk memberikan fleksibilitas. Memiliki desain yang ringkas dan ringan sehingga mudah dibawa dan tidak memakan banyak ruang saat disimpan. tersedia fitur knob pengunci yang berfungsi sebagai pengaman untuk menjaga aliran gas tetap tertutup saat kompor tidak digunakan. Selain portabel, kompor ini juga dilengkapi tas penyimpanan yang kokoh agar lebih nyaman saat dibawa bepergian. Tas tersebut membantu kompor tetap tersusun rapi, aman, dan terlindungi dari benturan selama perjalanan maupun saat disimpan."
-            data-brand="Niko"
-            data-berat="950 Gram"
-            data-material="Material plate berenamel + Pemantik Piezoelectric "
-            data-stok="5"
-            data-kategori="tenda">
-
-        <div class="group bg-[#efefe9] rounded-xl shadow overflow-hidden 
-            hover:shadow-xl hover:-translate-y-1 
-            transition duration-300">
-            <img src="https://static.retailworldvn.com/Products/Images/12226/325027/kompor-gas-portable-niko-nk-268c-violet-1.jpg"
-                 class="w-full h-56 object-cover">
-
-            <div class="p-4">
-                <h3 class="font-semibold text-gray-800 mb-2">Kompor Portable</h3>
-
-                <div class="flex justify-between items-end">
-                    <div>
-                        <p class="text-xs text-gray-500">MULAI DARI</p>
-                        <p class="text-green-800 font-bold text-lg">
-                            Rp 35.000 <span class="text-sm text-gray-600">/hari</span>
-                        </p>
-                    </div>
-
-                   <div onclick="event.stopPropagation(); tambahDariCard(this)" class="bg-green-800 p-3 rounded-lg hover:bg-green-900 transition cursor-pointer">
-                        <svg xmlns="http://www.w3.org/2000/svg" 
-                            class="w-6 h-6 text-white" 
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M2.25 2.25h1.386c.51 0 .96.343 1.087.838l.383 1.533m0 0L6.75 12h9.879c.75 0 1.4-.515 1.571-1.244l1.179-5.3a.75.75 0 00-.732-.956H5.106m0 0L4.5 3.75M6 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm12 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </a>
-
-    <!-- Headlamp -->
-    <a href="#" 
-        onclick="openModal(this); return false;"
-          class="produk-item"
-
-        data-nama="Headlamp LED Outdoor"
-        data-harga="Rp 10.000"
-        data-img="https://img.id.my-best.com/product_images/bb8e9e53b02e76fff46bea9176bcbfd9.jpeg"
-        data-desc="Headlamp LED outdoor yang praktis dan ringan digunakan untuk aktivitas malam hari seperti pendakian dan camping. Dilengkapi pencahayaan terang dengan beberapa mode lampu serta tali elastis yang nyaman dipakai di kepala."
-        data-brand="Eiger"
-        data-berat="150 gram"
-        data-material="ABS Plastic + Elastic Strap"
-        data-stok="8"
-        data-kategori="aksesoris">
-
-        <div class="group bg-[#efefe9] rounded-xl shadow overflow-hidden 
-            hover:shadow-xl hover:-translate-y-1 
-            transition duration-300">
-            <img src="https://img.id.my-best.com/product_images/bb8e9e53b02e76fff46bea9176bcbfd9.jpeg"
-                 class="w-full h-56 object-cover">
-
-            <div class="p-4">
-                <h3 class="font-semibold text-gray-800 mb-2">Headlamp LED Outdoor</h3>
-
-                <div class="flex justify-between items-end">
-                    <div>
-                        <p class="text-xs text-gray-500">MULAI DARI</p>
-                        <p class="text-green-800 font-bold text-lg">
-                            Rp 10.000 <span class="text-sm text-gray-600">/hari</span>
-                        </p>
-                    </div>
-
-                    <div onclick="event.stopPropagation(); tambahDariCard(this)" class="bg-green-800 p-3 rounded-lg hover:bg-green-900 transition cursor-pointer">
-                         <svg xmlns="http://www.w3.org/2000/svg" 
-                            class="w-6 h-6 text-white" 
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M2.25 2.25h1.386c.51 0 .96.343 1.087.838l.383 1.533m0 0L6.75 12h9.879c.75 0 1.4-.515 1.571-1.244l1.179-5.3a.75.75 0 00-.732-.956H5.106m0 0L4.5 3.75M6 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm12 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </a>
-
-    <!-- Tracking Pole -->
-    <a href="#" 
-        onclick="openModal(this); return false;"
-          class="produk-item"
-
-        data-nama="Trekking Pole Adjustable"
-        data-harga="Rp 20.000"
-        data-img="https://down-id.img.susercontent.com/file/78a0b7c52ffa8925220e28e40c137c8b"
-        data-desc="Trekking pole adjustable yang membantu menjaga keseimbangan saat berjalan di medan menanjak maupun menurun. Dilengkapi sistem pengunci yang kuat, pegangan ergonomis yang nyaman, serta ringan dibawa untuk aktivitas hiking dan pendakian."
-        data-brand="Haoyang"
-        data-berat="300 gram"
-        data-material="Aluminium Alloy"
-        data-stok="7"
-        data-kategori="aksesoris">
-
-        <div class="group bg-[#efefe9] rounded-xl shadow overflow-hidden 
-            hover:shadow-xl hover:-translate-y-1 
-            transition duration-300">
-            <img src="https://down-id.img.susercontent.com/file/78a0b7c52ffa8925220e28e40c137c8b"
-                 class="w-full h-56 object-cover">
-
-            <div class="p-4">
-                <h3 class="font-semibold text-gray-800 mb-2">Tracking Pole</h3>
-
-                <div class="flex justify-between items-end">
-                    <div>
-                        <p class="text-xs text-gray-500">MULAI DARI</p>
-                        <p class="text-green-800 font-bold text-lg">
-                            Rp 20.000 <span class="text-sm text-gray-600">/hari</span>
-                        </p>
-                    </div>
-
-                    <div onclick="event.stopPropagation(); tambahDariCard(this)" class="bg-green-800 p-3 rounded-lg hover:bg-green-900 transition cursor-pointer">
-                        <svg xmlns="http://www.w3.org/2000/svg" 
-                            class="w-6 h-6 text-white" 
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M2.25 2.25h1.386c.51 0 .96.343 1.087.838l.383 1.533m0 0L6.75 12h9.879c.75 0 1.4-.515 1.571-1.244l1.179-5.3a.75.75 0 00-.732-.956H5.106m0 0L4.5 3.75M6 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm12 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </a>
-
-<!-- Topi -->
-    <a href="#" 
-    onclick="openModal(this); return false;"
-      class="produk-item"
-
-    data-nama="Bucket Hat Outdoor"
-    data-harga="Rp 10.000"
-    data-img="https://img.lazcdn.com/g/p/24101af3be6c1a8bcb494c51d429993c.jpg_720x720q80.jpg"
-    data-desc="Bucket hat outdoor yang ringan dan nyaman digunakan untuk melindungi dari sinar matahari saat aktivitas di luar ruangan. Dilengkapi bahan breathable serta desain simpel yang cocok untuk hiking maupun penggunaan sehari-hari."
-    data-brand="The North Face"
-    data-berat="100 gram"
-    data-material="Cotton Twill"
-    data-stok="20"
-    data-kategori="pakaian">
-
-        <div class="group bg-[#efefe9] rounded-xl shadow overflow-hidden 
-            hover:shadow-xl hover:-translate-y-1 
-            transition duration-300">
-            <img src="https://img.lazcdn.com/g/p/24101af3be6c1a8bcb494c51d429993c.jpg_720x720q80.jpg"
-                 class="w-full h-56 object-cover">
-
-            <div class="p-4">
-                <h3 class="font-semibold text-gray-800 mb-2">Bucket Hat Outdoor</h3>
-
-                <div class="flex justify-between items-end">
-                    <div>
-                        <p class="text-xs text-gray-500">MULAI DARI</p>
-                        <p class="text-green-800 font-bold text-lg">
-                            Rp 10.000 <span class="text-sm text-gray-600">/hari</span>
-                        </p>
-                    </div>
-
-                    <div onclick="event.stopPropagation(); tambahDariCard(this)" class="bg-green-800 p-3 rounded-lg hover:bg-green-900 transition cursor-pointer">
-                        <svg xmlns="http://www.w3.org/2000/svg" 
-                            class="w-6 h-6 text-white" 
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M2.25 2.25h1.386c.51 0 .96.343 1.087.838l.383 1.533m0 0L6.75 12h9.879c.75 0 1.4-.515 1.571-1.244l1.179-5.3a.75.75 0 00-.732-.956H5.106m0 0L4.5 3.75M6 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm12 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </a>
-
-    <!-- Kompas -->
-    <a href="#" 
-    onclick="openModal(this); return false;"
-     class="produk-item"
-
-    data-nama="Kompas Outdoor"
-    data-harga="Rp 10.000"
-    data-img="https://image.made-in-china.com/365f3j00fzyiDWRPvgpe/Penggaris-Skala-Peta-Bacaan-Outdoor-Pengukuran-Kompas-dengan-Tali-untuk-Berkemah-Mendaki.webp"
-    data-desc="Kompas outdoor yang praktis dan akurat untuk membantu navigasi saat pendakian maupun kegiatan alam terbuka. Dilengkapi penunjuk arah presisi, ringan dibawa, serta mudah digunakan oleh pemula maupun pendaki berpengalaman."
-    data-brand="Brunton"
-    data-berat="150 gram"
-    data-material="Akrilik + Magnet Presisi"
-    data-stok="30"
-    data-kategori="aksesoris">
-
-        <div class="group bg-[#efefe9] rounded-xl shadow overflow-hidden 
-            hover:shadow-xl hover:-translate-y-1 
-            transition duration-300">
-            <img src="https://image.made-in-china.com/365f3j00fzyiDWRPvgpe/Penggaris-Skala-Peta-Bacaan-Outdoor-Pengukuran-Kompas-dengan-Tali-untuk-Berkemah-Mendaki.webp"
-                 class="w-full h-56 object-cover">
-
-            <div class="p-4">
-                <h3 class="font-semibold text-gray-800 mb-2">Kompas</h3>
-
-                <div class="flex justify-between items-end">
-                    <div>
-                        <p class="text-xs text-gray-500">MULAI DARI</p>
-                        <p class="text-green-800 font-bold text-lg">
-                            Rp 10.000 <span class="text-sm text-gray-600">/hari</span>
-                        </p>
-                    </div>
-
-                    <div onclick="event.stopPropagation(); tambahDariCard(this)" class="bg-green-800 p-3 rounded-lg hover:bg-green-900 transition cursor-pointer">
-                        <svg xmlns="http://www.w3.org/2000/svg" 
-                            class="w-6 h-6 text-white" 
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M2.25 2.25h1.386c.51 0 .96.343 1.087.838l.383 1.533m0 0L6.75 12h9.879c.75 0 1.4-.515 1.571-1.244l1.179-5.3a.75.75 0 00-.732-.956H5.106m0 0L4.5 3.75M6 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm12 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
-                        </svg>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </a>
-
-    <!-- Celana Pria -->
-        <a href="#" 
-        onclick="openModal(this); return false;"
-        class="produk-item"
-
-        data-nama="Celana Cargo Pria"
-        data-harga="Rp 25.000"
-        data-img="https://www.eigeradventure.com/blog/wp-content/uploads/2025/10/Outland-X28-Pro.jpeg"
-        data-desc="Kompas outdoor yang praktis dan akurat untuk membantu navigasi saat pendakian maupun kegiatan alam terbuka. Dilengkapi penunjuk arah presisi, ringan dibawa, serta mudah digunakan oleh pemula maupun pendaki berpengalaman."
-        data-brand="Brunton"
-        data-berat="150 gram"
-        data-material="Akrilik + Magnet Presisi"
-        data-stok="30"
-        data-kategori="pakaian">
-
-            <div class="group bg-[#efefe9] rounded-xl shadow overflow-hidden 
-                hover:shadow-xl hover:-translate-y-1 
-                transition duration-300">
-                <img src="https://www.eigeradventure.com/blog/wp-content/uploads/2025/10/Outland-X28-Pro.jpeg"
-                    class="w-full h-56 object-cover">
-
-                <div class="p-4">
-                    <h3 class="font-semibold text-gray-800 mb-2">Celana Cargo Pria</h3>
-
-                    <div class="flex justify-between items-end">
-                        <div>
-                            <p class="text-xs text-gray-500">MULAI DARI</p>
-                            <p class="text-green-800 font-bold text-lg">
-                                Rp 25.000 <span class="text-sm text-gray-600">/hari</span>
-                            </p>
-                        </div>
-
-                       <div onclick="event.stopPropagation(); tambahDariCard(this)" class="bg-green-800 p-3 rounded-lg hover:bg-green-900 transition cursor-pointer">
-                            <svg xmlns="http://www.w3.org/2000/svg" 
-                                class="w-6 h-6 text-white" 
-                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M2.25 2.25h1.386c.51 0 .96.343 1.087.838l.383 1.533m0 0L6.75 12h9.879c.75 0 1.4-.515 1.571-1.244l1.179-5.3a.75.75 0 00-.732-.956H5.106m0 0L4.5 3.75M6 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm12 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </a>
     </div>
 
      <!-- PAGINATION -->
@@ -746,7 +278,7 @@
 
     <!-- LINE -->
     <div class="border-t border-green-700 mt-10 pt-4 flex justify-between text-xs text-gray-300">
-        <span>© 2026 PeakRent Editorial. The Modern Explorer.</span>
+        <span>Â© 2026 PeakRent Editorial. The Modern Explorer.</span>
         <div class="flex gap-6">
             <span>Kebijakan Privasi</span>
             <span>Syarat & Ketentuan</span>
@@ -760,7 +292,7 @@
 
     <div class="bg-white w-[1000px] rounded-xl overflow-hidden relative flex">
 
-        <button onclick="closeModal()" class="absolute top-4 right-4 text-xl">✕</button>
+        <button onclick="closeModal()" class="absolute top-4 right-4 text-xl">âœ•</button>
 
         <div class="w-1/2">
             <img id="modalImg" class="w-full h-full object-cover">
@@ -817,17 +349,22 @@
 <script>
 function tambahKeranjang() {
     // Ambil ID dari dataset modal yang sudah diset saat openModal
-    let idAlat = document.getElementById("modal").dataset.currentId;
+    let modal = document.getElementById("modal");
+    let idAlat = modal.dataset.currentId;
 
     let produk = {
         id: idAlat,
+        id_alat: parseInt(idAlat) || 0,
         nama: document.getElementById("modalNama").innerText,
         harga: document.getElementById("modalHarga").innerText,
         img: document.getElementById("modalImg").src,
+        brand: document.getElementById("modalBrand").innerText,
+        berat: document.getElementById("modalBerat").innerText,
+        material: document.getElementById("modalMaterial").innerText,
         jumlah: 1
     };
 
-    let keranjang = JSON.parse(localStorage.getItem("keranjang")) || [];
+    let keranjang = JSON.parse(localStorage.getItem("keranjang_{{ Auth::id() }}")) || [];
     
     // Cari apakah produk dengan ID yang sama sudah ada di keranjang
     let index = keranjang.findIndex(item => item.id === idAlat);
@@ -838,7 +375,7 @@ function tambahKeranjang() {
         keranjang.push(produk);
     }
 
-    localStorage.setItem("keranjang", JSON.stringify(keranjang));
+    localStorage.setItem("keranjang_{{ Auth::id() }}", JSON.stringify(keranjang));
     updateCartCount();
     alert("Produk berhasil masuk keranjang!");
 }
@@ -901,8 +438,12 @@ searchInput.addEventListener('input', function() {
 });
 
 function openModal(el) {
-    document.getElementById("modal").classList.remove("hidden");
-    document.getElementById("modal").classList.add("flex");
+    let modal = document.getElementById("modal");
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+
+    // Simpan id alat di modal dataset
+    modal.dataset.currentId = el.dataset.id || '0';
 
     document.getElementById("modalNama").innerText = el.dataset.nama;
     document.getElementById("modalHarga").innerText = el.dataset.harga;
@@ -952,7 +493,7 @@ function kurangDurasi() {
 }
 
 function updateCartCount() {
-    let keranjang = JSON.parse(localStorage.getItem("keranjang")) || [];
+    let keranjang = JSON.parse(localStorage.getItem("keranjang_{{ Auth::id() }}")) || [];
 
     let total = 0;
     keranjang.forEach(item => {
@@ -973,42 +514,24 @@ function updateCartCount() {
 // jalankan saat page load
 updateCartCount();
 
-function tambahKeranjang() {
-    let produk = {
-        nama: document.getElementById("modalNama").innerText,
-        harga: document.getElementById("modalHarga").innerText,
-        img: document.getElementById("modalImg").src,
-        jumlah: 1
-    };
-
-    let keranjang = JSON.parse(localStorage.getItem("keranjang")) || [];
-
-    let index = keranjang.findIndex(item => item.nama === produk.nama);
-
-    if (index !== -1) {
-        keranjang[index].jumlah += 1;
-    } else {
-        keranjang.push(produk);
-    }
-
-    localStorage.setItem("keranjang", JSON.stringify(keranjang));
-
-    updateCartCount(); // 🔥 INI PENTING
-
-    alert("Produk ditambahkan ke keranjang!");
-}
+// Duplikat fungsi tambahKeranjang dihapus, sudah ada di atas
 
 function tambahDariCard(el) {
     let parent = el.closest('.produk-item');
 
     let produk = {
+        id: parent.dataset.id || '0',
+        id_alat: parseInt(parent.dataset.id) || 0,
         nama: parent.dataset.nama,
         harga: parent.dataset.harga,
         img: parent.dataset.img,
+        brand: parent.dataset.brand || '-',
+        berat: parent.dataset.berat || '-',
+        material: parent.dataset.material || '-',
         jumlah: 1
     };
 
-    let keranjang = JSON.parse(localStorage.getItem("keranjang")) || [];
+    let keranjang = JSON.parse(localStorage.getItem("keranjang_{{ Auth::id() }}")) || [];
 
     let index = keranjang.findIndex(item => item.nama === produk.nama);
 
@@ -1018,7 +541,7 @@ function tambahDariCard(el) {
         keranjang.push(produk);
     }
 
-    localStorage.setItem("keranjang", JSON.stringify(keranjang));
+    localStorage.setItem("keranjang_{{ Auth::id() }}", JSON.stringify(keranjang));
 
     updateCartCount();
 
@@ -1026,7 +549,7 @@ function tambahDariCard(el) {
 }
 
 function updateCartCount() {
-    let keranjang = JSON.parse(localStorage.getItem("keranjang")) || [];
+    let keranjang = JSON.parse(localStorage.getItem("keranjang_{{ Auth::id() }}")) || [];
 
     let total = 0;
     keranjang.forEach(item => {

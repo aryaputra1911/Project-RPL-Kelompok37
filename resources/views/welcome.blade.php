@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <title>PeakRent</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,30 +9,62 @@
     <!-- TANPA FILE CSS, pakai Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100">
+<body class="bg-[#f4f4ef]" style="font-family: 'Poppins', sans-serif;">
 
 <nav class="flex justify-between items-center px-10 py-4 bg-white border-b">
-    <h1 class="text-green-700 font-bold text-lg">PeakRent</h1>
+    <h1 class="text-green-700 font-bold text-lg"><a href="{{ url('/') }}">PeakRent</a></h1>
 
     <ul class="flex gap-8 text-gray-600 font-medium">
-        <li><a href="/" class="hover:text-green-700">Beranda</a></li>
-        <li><a href="/produk" class="hover:text-green-700">Produk</a></li>
-        <li><a href="/panduan" class="hover:text-green-700">Panduan Sewa</a></li>
+        <li><a href="{{ url('/') }}" class="hover:text-green-700">Beranda</a></li>
+        <li><a href="{{ url('/produk') }}" class="hover:text-green-700">Produk</a></li>
+        <li><a href="{{ url('/panduan') }}" class="hover:text-green-700">Panduan Sewa</a></li>
+        @auth
+        <li><a href="{{ url('/pesanan') }}" class="hover:text-green-700">Pesanan</a></li>
+        @endauth
     </ul>
 
-    <div class="flex gap-4">
+    <div class="flex gap-4 items-center">
         <!-- cart -->
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 4h14m-6 0a2 2 0 11-4 0m4 0a2 2 0 104 0"/>
-        </svg>
+        <a href="{{ url('/keranjang') }}" class="relative cursor-pointer">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 4h14m-6 0a2 2 0 11-4 0m4 0a2 2 0 104 0"/>
+            </svg>
+            <span id="cartCount" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] px-1.5 py-[1px] rounded-full" style="display: none;">0</span>
+        </a>
 
         <!-- user -->
-        <a href="/login" class="text-green-700 hover:text-green-900 transition -mt-1">
+        @auth
+        <div class="flex items-center gap-3 relative">
+            <div onclick="this.nextElementSibling.classList.toggle('hidden')" class="flex items-center gap-3 cursor-pointer">
+                <span class="text-sm text-gray-700">{{ Auth::user()->nama }}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7 text-green-700 hover:text-green-900 transition">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                </svg>
+            </div>
+            <div class="hidden absolute top-10 right-0 w-48 bg-white rounded-2xl shadow-xl p-3 border z-50">
+                <div class="flex items-center gap-3 pb-3">
+                    <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600">👤</div>
+                    <div class="leading-tight">
+                        <p class="font-semibold text-[13px] text-gray-800">{{ Auth::user()->nama }}</p>
+                        <p class="text-[11px] text-gray-500">{{ Auth::user()->email }}</p>
+                    </div>
+                </div>
+                <hr class="mb-2">
+                <a href="{{ url('/pesanan') }}" class="flex items-center gap-2 text-sm text-gray-700 py-2 mb-3">↺ Riwayat Pesanan</a>
+                <form method="POST" action="{{ url('/logout') }}">
+                    @csrf
+                    <button class="w-full bg-green-800 hover:bg-green-900 text-white py-2 rounded-lg text-sm font-medium">Keluar</button>
+                </form>
+            </div>
+        </div>
+        @else
+        <a href="{{ url('/login') }}" class="text-green-700 hover:text-green-900 transition -mt-1">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
             </svg>
         </a>
+        @endauth
     </div>
 </nav>
 
@@ -50,11 +83,11 @@
             Fokus pada perjalanan dan pengalaman, biarkan kami yang menyediakan perlengkapan terbaik untuk setiap langkah pendakian.
         </p>
 
-        <button 
+        <a href="{{ url('/login') }}" 
             style="background: linear-gradient(90deg, rgba(20, 75, 120, 1) 0%, rgba(7, 82, 52, 1) 49%, rgba(7, 94, 68, 1) 61%, rgba(29, 97, 25, 1) 81%, rgba(17, 97, 10, 1) 89%, rgba(7, 66, 5, 1) 100%);"
-            class="mt-6 text-white px-10 py-3 rounded-xl font-bold w-max shadow-lg hover:brightness-110 transition-all">
+            class="mt-6 text-white px-10 py-3 rounded-xl font-bold w-max shadow-lg hover:brightness-110 transition-all inline-block">
             Sewa Sekarang
-        </button>
+        </a>
     </div>
 </section>
 
@@ -259,7 +292,7 @@
 
 <script>
 function updateCartCount() {
-    let keranjang = JSON.parse(localStorage.getItem("keranjang")) || [];
+    let keranjang = JSON.parse(localStorage.getItem("keranjang_{{ Auth::id() }}")) || [];
     let total = 0;
     
     keranjang.forEach(item => {

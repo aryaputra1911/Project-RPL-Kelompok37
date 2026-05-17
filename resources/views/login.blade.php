@@ -72,7 +72,7 @@
 
             <div class="flex justify-between text-sm mb-1">
                 <label class="text-xs font-semibold text-gray-600 block mb-1 tracking-wide"> PASSWORD </label>
-                <span class="text-gray-400 text-xs">Lupa password?</span>
+                <a href="{{ url('/lupa-password') }}" class="text-gray-400 text-xs hover:text-green-700 transition">Lupa password?</a>
             </div>
 
             <input type="password" id="password" name="password" required
@@ -161,17 +161,19 @@
 
 <script>
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
-    e.preventDefault(); // Mencegah reload halaman
+    e.preventDefault();
 
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
+    const csrfToken = document.querySelector('input[name="_token"]').value;
 
     try {
-        const res = await fetch('http://127.0.0.1:8000/api/login', {
+        const res = await fetch('{{ url("/login") }}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
             },
             body: JSON.stringify({
                 email: email,
@@ -182,12 +184,11 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         const data = await res.json();
 
         if (res.ok) {
-            // PENTING: Simpan token ke localStorage agar user tetap login
             localStorage.setItem('token', data.access_token);
             localStorage.setItem('user', JSON.stringify(data.user));
 
             alert("Login berhasil!");
-            window.location.href = "/"; // Pindah ke beranda
+            window.location.href = "{{ url('/') }}";
         } else {
             alert(data.message || "Login gagal! Periksa email dan password.");
         }
@@ -196,9 +197,6 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     }
 });
 </script>
-
-</body>
-</html>
 
 </body>
 </html>

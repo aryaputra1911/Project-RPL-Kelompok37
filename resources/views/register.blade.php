@@ -190,9 +190,8 @@
 </footer>
 <script>
     document.getElementById('registerForm').addEventListener('submit', async (e) => {
-        e.preventDefault(); // Menghentikan halaman agar tidak refresh
+        e.preventDefault();
 
-        // Mengambil data dari input berdasarkan ID
         const formData = {
             nama: document.getElementById('nama').value,
             email: document.getElementById('email').value,
@@ -201,23 +200,25 @@
             password_confirmation: document.getElementById('password_confirmation').value
         };
 
+        const csrfToken = document.querySelector('input[name="_token"]').value;
+
         try {
-            const res = await fetch('http://127.0.0.1:8000/api/register', {
+            const res = await fetch('{{ url("/register") }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
                 },
-                body: JSON.stringify(formData) // Mengirim data yang sama seperti di Postman
+                body: JSON.stringify(formData)
             });
 
             const data = await res.json();
 
             if (res.ok) {
                 alert("Registrasi Berhasil! Selamat bergabung di PeakRent.");
-                window.location.href = "/login"; // Pindah ke halaman login
+                window.location.href = "{{ url('/login') }}";
             } else {
-                // Jika ada error validasi (misal email sudah ada)
                 alert(JSON.stringify(data.errors || data.message));
             }
         } catch (error) {
