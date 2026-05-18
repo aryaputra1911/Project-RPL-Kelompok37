@@ -45,7 +45,7 @@
             </div>
             <div class="hidden absolute top-10 right-0 w-48 bg-white rounded-2xl shadow-xl p-3 border z-50">
                 <div class="flex items-center gap-3 pb-3">
-                    <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600">ðŸ‘¤</div>
+                    <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600"></div>
                     <div class="leading-tight">
                         <p class="font-semibold text-[13px] text-gray-800">{{ Auth::user()->nama }}</p>
                         <p class="text-[11px] text-gray-500">{{ Auth::user()->email }}</p>
@@ -292,7 +292,7 @@
 
     <div class="bg-white w-[1000px] rounded-xl overflow-hidden relative flex">
 
-        <button onclick="closeModal()" class="absolute top-4 right-4 text-xl">âœ•</button>
+        <button onclick="closeModal()" class="absolute top-4 right-4 text-xl">&times;</button>
 
         <div class="w-1/2">
             <img id="modalImg" class="w-full h-full object-cover">
