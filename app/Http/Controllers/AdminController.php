@@ -221,10 +221,11 @@ class AdminController extends Controller
 
         // Update status transaksi juga
         if ($pesanan->transaksi) {
-            if ($request->status == 'dikonfirmasi' || $request->status == 'disewa' || $request->status == 'selesai') {
+            if (in_array($request->status, ['dikonfirmasi', 'disewa', 'selesai'])) {
                 $pesanan->transaksi->status_bayar = 'lunas';
             } else {
-                $pesanan->transaksi->status_bayar = $request->status;
+                // belum_bayar dan menunggu_konfirmasi → tetap belum_bayar di transaksi
+                $pesanan->transaksi->status_bayar = 'belum_bayar';
             }
             $pesanan->transaksi->save();
         }

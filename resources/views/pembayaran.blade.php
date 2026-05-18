@@ -231,9 +231,12 @@ function prosesBayar() {
             pesanan_ids: pesananIds
         })
     })
-    .then(res => res.json())
-    .then(data => {
-        if (data.message && !data.message.includes('gagal')) {
+    .then(res => {
+        // Simpan res agar bisa diakses setelah parse JSON
+        return res.json().then(data => ({ ok: res.ok, data }));
+    })
+    .then(({ ok, data }) => {
+        if (ok) {
             // Update UI status
             let box = document.getElementById("statusBox");
             let text = document.getElementById("statusText");
@@ -328,32 +331,61 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function loadPesananData(pesananIds) {
-    // Fetch each pesanan by loading the pesanan page data
-    // Since we don't have a dedicated API, we'll construct from available data
-    let itemsHtml = '';
-    let subtotal = 0;
-    
-    // Use fetch to get pesanan data from server
-    fetch("{{ url('/pesanan') }}?format=json&ids=" + pesananIds.join(','), {
+    fetch("{{ url('/pesanan/detail') }}?ids=" + pesananIds.join(','), {
         headers: { "Accept": "application/json" }
     })
-    .then(res => {
-        // If we get HTML back, the route returns view, not JSON
-        // Fallback: show the pesanan IDs and basic info
-        // We need to add a JSON endpoint - for now use localStorage biodata
+    .then(res => res.json())
+    .then(data => {
         let container = document.getElementById("itemsContainer");
-        
-        // Pesanan created successfully, show confirmation
-        container.innerHTML = `
-            <div class="text-center py-4">
-                <p class="text-gray-600 text-sm">Pesanan Anda telah dibuat.</p>
-                <p class="text-gray-500 text-xs mt-1">ID Pesanan: ${pesananIds.map(id => '#PR-' + String(id).padStart(3, '0')).join(', ')}</p>
-                <p class="text-green-700 font-semibold mt-2">Silakan klik "Bayar Sekarang" untuk menyelesaikan pembayaran.</p>
-            </div>
-        `;
+        let pesanans  = data.pesanans || [];
+
+        if (pesanans.length === 0) {
+            container.innerHTML = `<p class="text-gray-400 text-sm text-center py-4">Detail pesanan tidak ditemukan.</p>`;
+            return;
+        }
+
+        let html = '';
+        let totalSubtotal = 0;
+
+        pesanans.forEach(p => {
+            // Gunakan total_biaya dari transaksi sebagai subtotal (sudah dihitung server)
+            totalSubtotal += p.total_biaya;
+
+            p.items.forEach(item => {
+                let imgTag = item.foto
+                    ? `<img src="${item.foto}" class="w-12 h-12 object-cover rounded mr-3" onerror="this.src='https://via.placeholder.com/48'">`
+                    : `<div class="w-12 h-12 bg-gray-200 rounded mr-3 flex items-center justify-center text-gray-400 text-xs">No Img</div>`;
+                html += `
+                    <div class="flex items-center justify-between py-2 border-b last:border-0">
+                        <div class="flex items-center">
+                            ${imgTag}
+                            <div>
+                                <p class="text-sm font-semibold text-gray-800">${item.nama}</p>
+                                <p class="text-xs text-gray-500">${item.jumlah} unit</p>
+                            </div>
+                        </div>
+                        <p class="text-sm font-medium text-gray-700">${formatRupiahLocal(item.subtotal)}</p>
+                    </div>`;
+            });
+
+            // Update tanggal sewa
+            if (p.tgl_sewa) {
+                let tgl = new Date(p.tgl_sewa).toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'});
+                let tglKembali = new Date(p.tgl_kembali).toLocaleDateString('id-ID', {day:'2-digit', month:'long', year:'numeric'});
+                document.getElementById("lblTanggalSewa").innerText = tgl + ' – ' + tglKembali;
+            }
+        });
+
+        container.innerHTML = html;
+
+        // Update subtotal & total
+        document.getElementById("lblSubtotal").innerText = formatRupiahLocal(totalSubtotal);
+        document.getElementById("lblTotal").innerText    = formatRupiahLocal(totalSubtotal + 5000 + 100000);
     })
     .catch(err => {
         console.error(err);
+        document.getElementById("itemsContainer").innerHTML =
+            `<p class="text-gray-400 text-sm text-center py-4">Gagal memuat detail pesanan.</p>`;
     });
 }
 </script>

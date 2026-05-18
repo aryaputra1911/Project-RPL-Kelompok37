@@ -41,23 +41,22 @@ Route::get('/keranjang', function () {
     return view('keranjang');
 })->name('keranjang');
 
-// ─── FORMULIR SEWA ──────────────────────────────────
-Route::get('/formulir', function () {
-    return view('formulir');
-});
-
-// ─── PEMBAYARAN (tampilkan halaman) ─────────────────
-Route::get('/pembayaran', function () {
-    return view('pembayaran');
-});
-
 // ─── PESANAN (butuh login) ──────────────────────────
-Route::get('/pesanan', [PesananController::class, 'index'])->name('pesanan');
+Route::get('/pesanan', [PesananController::class, 'index'])->name('pesanan')->middleware('auth');
+
+// ─── FORMULIR & PEMBAYARAN (butuh login) ────────────
+Route::middleware('auth')->group(function () {
+    Route::get('/formulir', function () {
+        return view('formulir');
+    });
+    Route::get('/pembayaran', [PesananController::class, 'pembayaran']);
+});
 
 // ─── API CHECKOUT & BAYAR (butuh login) ─────────────
 Route::middleware('auth')->group(function () {
     Route::post('/checkout', [PesananController::class, 'checkout'])->name('checkout');
     Route::post('/bayar', [PesananController::class, 'bayar'])->name('bayar');
+    Route::get('/pesanan/detail', [PesananController::class, 'detailJson'])->name('pesanan.detail');
 });
 
 // ─── LUPA PASSWORD ──────────────────────────────────

@@ -39,6 +39,36 @@ class PesananController extends Controller
         try {
             $subtotal = 0;
 
+            // Validasi stok semua item sebelum membuat pesanan
+            foreach ($request->items as $item) {
+                $idAlat = $item['id_alat'] ?? 0;
+                $jumlah = (int) $item['jumlah'];
+                $alat   = null;
+
+                if ($idAlat > 0) {
+                    $alat = Alat::find($idAlat);
+                }
+                if (!$alat && !empty($item['nama'])) {
+                    $alat = Alat::where('nama_alat', $item['nama'])->first();
+                }
+
+                // Tolak jika alat tidak ditemukan di database
+                if (!$alat) {
+                    DB::rollback();
+                    return response()->json([
+                        'message' => 'Produk "' . ($item['nama'] ?? 'tidak dikenal') . '" tidak ditemukan.',
+                    ], 422);
+                }
+
+                // Cek stok mencukupi
+                if ($alat->stok < $jumlah) {
+                    DB::rollback();
+                    return response()->json([
+                        'message' => 'Stok "' . $alat->nama_alat . '" tidak mencukupi. Tersedia: ' . $alat->stok . ', diminta: ' . $jumlah . '.',
+                    ], 422);
+                }
+            }
+
             // Buat satu pemesanan untuk semua item
             $pemesanan = Pemesanan::create([
                 'Users_id_user' => $userId,
@@ -48,33 +78,25 @@ class PesananController extends Controller
             ]);
 
             foreach ($request->items as $item) {
-                $harga = (int) $item['harga'];
+                $harga  = (int) $item['harga'];
                 $jumlah = (int) $item['jumlah'];
                 $durasi = (int) $request->durasi;
                 $totalItem = $harga * $jumlah * $durasi;
                 $subtotal += $totalItem;
 
-                // Cari alat: pertama by ID, lalu by nama
                 $idAlat = $item['id_alat'] ?? 0;
-                $alat = null;
+                $alat   = null;
 
                 if ($idAlat > 0) {
                     $alat = Alat::find($idAlat);
                 }
-
-                // Fallback: cari by nama jika id_alat tidak ditemukan
                 if (!$alat && !empty($item['nama'])) {
                     $alat = Alat::where('nama_alat', $item['nama'])->first();
                 }
 
-                // Jika alat tetap tidak ditemukan, buat baru
-                if (!$alat) {
-                    $alat = Alat::create([
-                        'nama_alat'      => $item['nama'] ?? 'Produk Tidak Dikenal',
-                        'harga_per_hari' => $harga,
-                        'stok'           => 99,
-                    ]);
-                }
+                // Kurangi stok
+                $alat->stok -= $jumlah;
+                $alat->save();
 
                 // Buat detail pemesanan per item
                 DetailPemesanan::create([
@@ -154,6 +176,44 @@ class PesananController extends Controller
                 'message' => 'Pembayaran gagal: ' . $e->getMessage(),
             ], 500);
         }
+    }
+
+    /**
+     * JSON endpoint: ambil detail pesanan by IDs untuk halaman pembayaran.
+     */
+    public function detailJson(Request $request)
+    {
+        $ids = array_filter(explode(',', $request->query('ids', '')), 'is_numeric');
+
+        if (empty($ids)) {
+            return response()->json(['pesanans' => []]);
+        }
+
+        $pesanans = Pemesanan::whereIn('id_pesanan', $ids)
+            ->where('Users_id_user', Auth::id())
+            ->with(['detailPemesanan.alat', 'transaksi'])
+            ->get()
+            ->map(function ($p) {
+                return [
+                    'id_pesanan'  => $p->id_pesanan,
+                    'tgl_sewa'    => $p->tgl_sewa,
+                    'tgl_kembali' => $p->tgl_kembali,
+                    'status'      => $p->status,
+                    'total_biaya' => $p->transaksi->total_biaya ?? 0,
+                    'items'       => $p->detailPemesanan->map(function ($d) {
+                        return [
+                            'nama'     => $d->alat->nama_alat ?? '-',
+                            'jumlah'   => $d->jumlah,
+                            'subtotal' => $d->subtotal,
+                            'foto'     => $d->alat && $d->alat->foto
+                                            ? asset('storage/' . $d->alat->foto)
+                                            : null,
+                        ];
+                    }),
+                ];
+            });
+
+        return response()->json(['pesanans' => $pesanans]);
     }
 
     /**

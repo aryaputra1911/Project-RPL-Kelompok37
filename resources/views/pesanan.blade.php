@@ -162,7 +162,8 @@
                         <p class="text-lg font-bold {{ $totalClass }} mb-2">Rp {{ number_format($totalBiaya, 0, ',', '.') }}</p>
                         
                         @if($showBayarBtn)
-                        <button onclick="window.location.href='{{ url('/pembayaran') }}'"
+                        <button
+                            onclick="bayarPesanan({{ $pesanan->id_pesanan }})"
                             class="bg-[#D80000] hover:bg-red-800 text-white text-[11px] font-bold py-1.5 px-6 rounded transition">
                             Bayar
                         </button>
@@ -229,5 +230,13 @@
     </div>
 </footer>
 
+<script>
+function bayarPesanan(pesananId) {
+    // Set pesanan_ids ke localStorage agar halaman pembayaran tahu pesanan mana yang dibayar
+    let userId = "{{ Auth::id() }}";
+    localStorage.setItem("pesanan_ids_" + userId, JSON.stringify([pesananId]));
+    window.location.href = "{{ url('/pembayaran') }}";
+}
+</script>
 </body>
 </html>
