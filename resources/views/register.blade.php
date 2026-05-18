@@ -65,22 +65,33 @@
                 Lengkapi data dirimu untuk mulai menyewa perlengkapan terbaik.
             </p>
 
-        <form id="registerForm" class="space-y-3">
+        <form id="registerForm" method="POST" action="{{ url('/register') }}" class="space-y-3">
     @csrf
+
+    {{-- Tampilkan error validasi --}}
+    @if($errors->any())
+        <div class="bg-red-50 border border-red-200 text-red-600 text-xs rounded-lg px-4 py-3 space-y-1">
+            @foreach($errors->all() as $error)
+                <p>• {{ $error }}</p>
+            @endforeach
+        </div>
+    @endif
 
     <!-- Nama -->
     <div>
-        <label class="text-xs font-semibold text-gray-600 block mb-1 tracking-wide"> NAMA LENGKAP </label>
+        <label class="text-xs font-semibold text-gray-600 block mb-1 tracking-wide">NAMA LENGKAP</label>
         <input type="text" name="nama" id="nama"
-            class="w-full p-2.5 rounded bg-[#E2E3DC]"
+            value="{{ old('nama') }}"
+            class="w-full p-2.5 rounded bg-[#E2E3DC] @error('nama') ring-2 ring-red-400 @enderror"
             placeholder="Masukkan nama sesuai KTP">
     </div>
 
     <!-- Email -->
     <div>
         <label class="text-xs font-semibold text-gray-600 block mb-1 tracking-wide">EMAIL</label>
-        <input type="email" name="email" id = "email"
-            class="w-full p-2.5 rounded bg-[#E2E3DC]"
+        <input type="email" name="email" id="email"
+            value="{{ old('email') }}"
+            class="w-full p-2.5 rounded bg-[#E2E3DC] @error('email') ring-2 ring-red-400 @enderror"
             placeholder="Masukkan email">
     </div>
 
@@ -88,10 +99,11 @@
     <div>
         <label class="text-xs font-semibold text-gray-600 block mb-1 tracking-wide">NOMOR WHATSAPP</label>
         <div class="flex">
-            <span class="bg-gray-200 px-3 py-2.5 rounded-l">+62</span>
+            <span class="bg-gray-200 px-3 py-2.5 rounded-l text-sm">+62</span>
             <input type="text" name="no_telp" id="no_telp"
-                class="w-full p-2.5 rounded-r bg-[#E2E3DC]"
-                placeholder="xxxxxxxx">
+                value="{{ old('no_telp') }}"
+                class="w-full p-2.5 rounded-r bg-[#E2E3DC] @error('no_telp') ring-2 ring-red-400 @enderror"
+                placeholder="8xxxxxxxxx">
         </div>
     </div>
 
@@ -100,7 +112,7 @@
         <div class="w-1/2">
             <label class="text-xs font-semibold text-gray-600 block mb-1 tracking-wide">PASSWORD</label>
             <input type="password" name="password" id="password"
-                class="w-full p-2.5 rounded bg-[#E2E3DC]">
+                class="w-full p-2.5 rounded bg-[#E2E3DC] @error('password') ring-2 ring-red-400 @enderror">
         </div>
 
         <div class="w-1/2">
@@ -111,7 +123,7 @@
     </div>
 
     <!-- Button -->
-    <button class="w-full bg-green-800 text-white py-2.5 rounded mt-2">
+    <button type="submit" class="w-full bg-green-800 text-white py-2.5 rounded mt-2 hover:bg-green-900 transition">
         Daftar
     </button>
 
@@ -188,44 +200,6 @@
     </div>
 
 </footer>
-<script>
-    document.getElementById('registerForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
 
-        const formData = {
-            nama: document.getElementById('nama').value,
-            email: document.getElementById('email').value,
-            no_telp: document.getElementById('no_telp').value,
-            password: document.getElementById('password').value,
-            password_confirmation: document.getElementById('password_confirmation').value
-        };
-
-        const csrfToken = document.querySelector('input[name="_token"]').value;
-
-        try {
-            const res = await fetch('{{ url("/register") }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                body: JSON.stringify(formData)
-            });
-
-            const data = await res.json();
-
-            if (res.ok) {
-                alert("Registrasi Berhasil! Selamat bergabung di PeakRent.");
-                window.location.href = "{{ url('/login') }}";
-            } else {
-                alert(JSON.stringify(data.errors || data.message));
-            }
-        } catch (error) {
-            console.error("Error:", error);
-            alert("Gagal terhubung ke server. Pastikan Laravel menyala!");
-        }
-    });
-</script>
 </body>
 </html>

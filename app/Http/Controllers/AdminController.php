@@ -20,7 +20,7 @@ class AdminController extends Controller
     public function showLogin()
     {
         // Kalau sudah login sebagai admin, langsung ke dashboard
-        if (Auth::check()) {
+        if (Auth::guard('admin')->check()) {
             return redirect()->route('admin.dashboard');
         }
         return view('Frontend Admin.loginadmin');
@@ -33,13 +33,13 @@ class AdminController extends Controller
             'password' => 'required',
         ]);
 
-        $user = User::where('email', $request->email)->first();
+        $admin = Admin::where('email', $request->email)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (!$admin || !Hash::check($request->password, $admin->password)) {
             return back()->with('error', 'Email atau password salah!');
         }
 
-        Auth::login($user);
+        Auth::guard('admin')->login($admin);
         $request->session()->regenerate();
 
         return redirect()->route('admin.dashboard');
@@ -47,7 +47,7 @@ class AdminController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout();
+        Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect()->route('admin.login');

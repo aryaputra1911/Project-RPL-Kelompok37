@@ -77,8 +77,8 @@ Route::get('/admin/login', [AdminController::class, 'showLogin'])->name('admin.l
 Route::post('/admin/login', [AdminController::class, 'login'])->name('admin.login.post');
 Route::post('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
 
-// Admin area (butuh login)
-Route::middleware('auth')->prefix('admin')->group(function () {
+// Admin area (butuh login admin)
+Route::middleware('auth:admin')->prefix('admin')->group(function () {
     // Dashboard
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 

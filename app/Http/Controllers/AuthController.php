@@ -66,10 +66,19 @@ class AuthController extends Controller
             'email'    => 'required|string|email|max:255|unique:user',
             'no_telp'  => 'required|string|max:15',
             'password' => 'required|string|min:8|confirmed',
+        ], [
+            'nama.required'       => 'Nama lengkap wajib diisi.',
+            'email.required'      => 'Email wajib diisi.',
+            'email.email'         => 'Format email tidak valid.',
+            'email.unique'        => 'Email sudah terdaftar.',
+            'no_telp.required'    => 'Nomor WhatsApp wajib diisi.',
+            'password.required'   => 'Password wajib diisi.',
+            'password.min'        => 'Password minimal 8 karakter.',
+            'password.confirmed'  => 'Konfirmasi password tidak cocok.',
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
+            return back()->withErrors($validator)->withInput();
         }
 
         $user = User::create([
@@ -79,10 +88,11 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return response()->json([
-            'message' => 'Registrasi berhasil!',
-            'user'    => $user
-        ], 201);
+        // Auto-login setelah register
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        return redirect('/')->with('success', 'Registrasi berhasil! Selamat bergabung di PeakRent.');
     }
 
     // Logout

@@ -35,7 +35,7 @@
 
         <div class="flex items-center gap-3 relative">
             <div onclick="this.nextElementSibling.classList.toggle('hidden')" class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
-                <span>{{ Auth::user()->nama ?? 'admin' }}</span>
+                <span>{{ Auth::guard('admin')->user()->nama ?? 'admin' }}</span>
                 <svg xmlns="http://www.w3.org/2000/svg" 
                     class="w-4 h-4" 
                     fill="none" 
@@ -48,7 +48,7 @@
                 </svg>
             </div>
             <div class="hidden absolute top-10 right-0 w-44 bg-white rounded-xl shadow-xl p-3 border z-50">
-                <p class="text-xs text-gray-500 mb-2">{{ Auth::user()->email ?? '' }}</p>
+                <p class="text-xs text-gray-500 mb-2">{{ Auth::guard('admin')->user()->email ?? '' }}</p>
                 <form method="POST" action="{{ route('admin.logout') }}">
                     @csrf
                     <button class="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg text-sm font-medium">Keluar</button>
