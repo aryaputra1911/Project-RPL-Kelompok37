@@ -93,14 +93,24 @@
                 Masukkan alamat emailmu untuk menerima instruksi pemulihan akun dan pengaturan ulang password.
             </p>
 
-            <input type="email"
-                placeholder="Masukkan email"
-                class="w-full h-[50px] bg-[#E2E3DC] rounded-lg px-4 mb-4 outline-none">
+            <form method="POST" action="{{ url('/lupa-password') }}">
+                @csrf
 
-            <a href="{{ url('/reset-password') }}"
-            class="flex items-center justify-center w-full h-[50px] bg-[#075B43] text-white rounded-lg font-semibold">
-                Kirim Instruksi
-            </a>
+                @error('email')
+                    <p class="text-red-500 text-xs mb-3">{{ $message }}</p>
+                @enderror
+
+                <input type="email"
+                    name="email"
+                    placeholder="Masukkan email"
+                    value="{{ old('email') }}"
+                    class="w-full h-[50px] bg-[#E2E3DC] rounded-lg px-4 mb-4 outline-none @error('email') ring-2 ring-red-400 @enderror">
+
+                <button type="submit"
+                    class="flex items-center justify-center w-full h-[50px] bg-[#075B43] hover:bg-[#064a36] text-white rounded-lg font-semibold transition">
+                    Kirim Instruksi
+                </button>
+            </form>
 
             <div class="text-center mt-5">
                 <a href="{{ url('/login') }}"

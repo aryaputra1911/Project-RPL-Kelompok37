@@ -62,6 +62,10 @@
                 <p class="text-red-500 mb-4">{{ session('error') }}</p>
             @endif
 
+            @if(session('success'))
+                <p class="text-green-600 text-sm bg-green-50 border border-green-200 rounded-lg px-4 py-3 mb-4">{{ session('success') }}</p>
+            @endif
+
            
         <form id="loginForm" class="space-y-4">
             @csrf

@@ -93,4 +93,68 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
         return redirect('/');
     }
+
+    // Tampilkan halaman lupa password
+    public function showLupaPassword()
+    {
+        return view('lupapw');
+    }
+
+    // Proses kirim email reset (simpan email ke session, redirect ke reset)
+    public function kirimReset(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return back()->withErrors(['email' => 'Email tidak ditemukan.'])->withInput();
+        }
+
+        // Simpan email ke session agar halaman reset tahu milik siapa
+        $request->session()->put('reset_email', $request->email);
+
+        return redirect('/reset-password');
+    }
+
+    // Tampilkan halaman reset password
+    public function showResetPassword(Request $request)
+    {
+        // Pastikan ada email di session (tidak boleh akses langsung)
+        if (!$request->session()->has('reset_email')) {
+            return redirect('/lupa-password');
+        }
+        return view('resetpw');
+    }
+
+    // Proses simpan password baru
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'password'              => 'required|string|min:8|confirmed',
+            'password_confirmation' => 'required',
+        ]);
+
+        $email = $request->session()->get('reset_email');
+
+        if (!$email) {
+            return redirect('/lupa-password')->withErrors(['email' => 'Sesi reset password tidak valid. Silakan ulangi.']);
+        }
+
+        $user = User::where('email', $email)->first();
+
+        if (!$user) {
+            return redirect('/lupa-password')->withErrors(['email' => 'User tidak ditemukan.']);
+        }
+
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        // Hapus session reset
+        $request->session()->forget('reset_email');
+
+        return redirect('/login')->with('success', 'Password berhasil direset! Silakan login dengan password baru.');
+    }
 }

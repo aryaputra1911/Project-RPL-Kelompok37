@@ -99,6 +99,9 @@
 
             <div>
 
+            <form method="POST" action="{{ url('/reset-password') }}">
+                @csrf
+
                     <!-- PASSWORD BARU -->
                     <div class="mb-4">
                         <label class="block text-xs font-bold text-gray-800 mb-2 tracking-wide">
@@ -107,14 +110,18 @@
 
                         <div class="relative">
                             <input id="passwordBaru" type="password"
-                                value="12345678"
-                                class="w-full h-[48px] bg-[#E2E3DC] rounded-lg px-4 pr-12 text-sm outline-none focus:ring-2 focus:ring-[#075B43]">
+                                name="password"
+                                placeholder="Masukkan password baru"
+                                class="w-full h-[48px] bg-[#E2E3DC] rounded-lg px-4 pr-12 text-sm outline-none focus:ring-2 focus:ring-[#075B43] @error('password') ring-2 ring-red-400 @enderror">
 
                             <button type="button" onclick="togglePassword('passwordBaru')"
                                 class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600">
                                 👁
                             </button>
                         </div>
+                        @error('password')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- KONFIRMASI PASSWORD -->
@@ -125,7 +132,8 @@
 
                         <div class="relative">
                             <input id="konfirmasiPassword" type="password"
-                                value="12345678"
+                                name="password_confirmation"
+                                placeholder="Ulangi password baru"
                                 class="w-full h-[48px] bg-[#E2E3DC] rounded-lg px-4 pr-12 text-sm outline-none focus:ring-2 focus:ring-[#075B43]">
 
                             <button type="button" onclick="togglePassword('konfirmasiPassword')"
@@ -135,10 +143,11 @@
                         </div>
                     </div>
 
-                    <a href="{{ url('/login?reset=success') }}"
-                    class="flex items-center justify-center w-full h-[52px] bg-[#075B43] hover:bg-[#064a36] text-white rounded-lg font-bold text-sm transition">
+                    <button type="submit"
+                        class="flex items-center justify-center w-full h-[52px] bg-[#075B43] hover:bg-[#064a36] text-white rounded-lg font-bold text-sm transition">
                         Simpan Perubahan
-                    </a>
+                    </button>
+            </form>
                 </div>
             </div>
         </div>

@@ -61,14 +61,12 @@ Route::middleware('auth')->group(function () {
 });
 
 // ─── LUPA PASSWORD ──────────────────────────────────
-Route::get('/lupa-password', function () {
-    return view('lupapw');
-});
+Route::get('/lupa-password', [AuthController::class, 'showLupaPassword']);
+Route::post('/lupa-password', [AuthController::class, 'kirimReset']);
 
 // ─── RESET PASSWORD ─────────────────────────────────
-Route::get('/reset-password', function () {
-    return view('resetpw');
-});
+Route::get('/reset-password', [AuthController::class, 'showResetPassword']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
 // ═══════════════════════════════════════════════════════
 // ─── ADMIN ROUTES ─────────────────────────────────────
