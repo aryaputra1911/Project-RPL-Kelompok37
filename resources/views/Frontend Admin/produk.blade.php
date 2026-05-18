@@ -13,46 +13,37 @@
 <!-- NAVBAR ADMIN -->
 <nav class="flex items-center justify-between px-6 md:px-10 py-4 bg-white border-b">
 
-    <a href="{{ route('admin.dashboard') }}" class="text-green-800 font-bold text-lg">
+    <a href="/admin/dashboard" class="text-green-800 font-bold text-lg">
         PeakRent
     </a>
 
     <div class="hidden md:flex items-center gap-10 text-sm font-medium text-gray-600">
-        <a href="{{ route('admin.dashboard') }}" class="hover:text-green-800">
+        <a href="/admin/dashboard" class="hover:text-green-800">
             Dashboard
         </a>
 
-        <a href="{{ route('admin.produk') }}" class="text-green-800 border-b-2 border-green-800 pb-1">
+        <a href="/admin/produk" class="text-green-800 border-b-2 border-green-800 pb-1">
             Produk
         </a>
 
-        <a href="{{ route('admin.pesanan') }}" class="hover:text-green-800">
+        <a href="/admin/pesanan" class="hover:text-green-800">
             Pesanan
         </a>
     </div>
 
-    <div class="flex items-center gap-3 relative">
-        <div onclick="this.nextElementSibling.classList.toggle('hidden')" class="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
-            <span>{{ Auth::user()->nama ?? 'admin' }}</span>
-            <svg xmlns="http://www.w3.org/2000/svg" 
-                class="w-4 h-4" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor">
-                <path stroke-linecap="round" 
-                    stroke-linejoin="round" 
-                    stroke-width="2"
-                    d="M5.121 17.804A9 9 0 1118.879 17.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-        </div>
-        <div class="hidden absolute top-10 right-0 w-44 bg-white rounded-xl shadow-xl p-3 border z-50">
-            <p class="text-xs text-gray-500 mb-2">{{ Auth::user()->email ?? '' }}</p>
-            <form method="POST" action="{{ route('admin.logout') }}">
-                @csrf
-                <button class="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg text-sm font-medium">Keluar</button>
-            </form>
-        </div>
-    </div>
+    <a href="/admin/login" class="flex items-center gap-2 text-sm text-gray-600">
+        <span>admin</span>
+        <svg xmlns="http://www.w3.org/2000/svg" 
+            class="w-4 h-4" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor">
+            <path stroke-linecap="round" 
+                stroke-linejoin="round" 
+                stroke-width="2"
+                d="M5.121 17.804A9 9 0 1118.879 17.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+    </a>
 
 </nav>
 
@@ -65,18 +56,11 @@
         </p>
     </div>
 
-    <a href="{{ route('admin.produk.tambah') }}"
+    <a href="/admin/produk/tambah"
        class="bg-green-800 text-white px-6 py-3 rounded-lg text-sm font-semibold hover:bg-green-900">
         + Tambah Produk
     </a>
 </div>
-
-<!-- FLASH MESSAGE -->
-@if(session('success'))
-    <div class="mx-10 mb-4 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm">
-        {{ session('success') }}
-    </div>
-@endif
 
 <!-- MAIN -->
 <div class="px-10 flex gap-8">
@@ -88,11 +72,11 @@
 
         <div class="space-y-2 text-sm text-gray-600">
             <label class="flex gap-2">
-                <input type="checkbox" value="tenda" onchange="filterProduk()"> Tenda &amp; Camping
+                <input type="checkbox" value="tenda" onchange="filterProduk()"> Tenda & Camping
             </label>
 
             <label class="flex gap-2">
-                <input type="checkbox" value="tas" onchange="filterProduk()"> Tas &amp; Carrier
+                <input type="checkbox" value="tas" onchange="filterProduk()"> Tas & Carrier
             </label>
 
             <label class="flex gap-2">
@@ -100,7 +84,7 @@
             </label>
 
             <label class="flex gap-2">
-                <input type="checkbox" value="aksesoris" onchange="filterProduk()"> Aksesoris &amp; Gear
+                <input type="checkbox" value="aksesoris" onchange="filterProduk()"> Aksesoris & Gear
             </label>
         </div>
 
@@ -134,33 +118,32 @@
 
         <!-- SEARCH -->
         <div class="mb-6">
-            <input type="text" id="searchInput" placeholder="Cari barang..." 
-                class="w-full border p-3 rounded-lg bg-[#EDEFE7] outline-none"
-                onkeyup="searchProduk()">
+            <input type="text" placeholder="Cari barang..." 
+                class="w-full border p-3 rounded-lg bg-[#EDEFE7] outline-none">
         </div>
 
         <!-- GRID PRODUK -->
-        <div class="grid grid-cols-3 gap-6" id="produkGrid">
+        <div class="grid grid-cols-3 gap-6">
 
-            @forelse($alats as $alat)
-            <div class="produk-item" data-kategori="" data-nama="{{ strtolower($alat->nama_alat) }}">
+            <!-- PRODUK 1 -->
+            <div class="produk-item" data-kategori="tenda">
                 <div class="group bg-[#efefe9] rounded-xl shadow overflow-hidden hover:shadow-xl hover:-translate-y-1 transition duration-300">
-                    <img src="{{ $alat->foto ? asset('storage/' . $alat->foto) : 'https://via.placeholder.com/400x300?text=No+Image' }}"
+                    <img src="https://img.lazcdn.com/g/p/d88566bf3c14379d779b6e3f8a3ea58d.png_720x720q80.png"
                         class="w-full h-56 object-cover">
 
                     <div class="p-4">
-                        <h3 class="font-semibold text-gray-800 mb-2">{{ $alat->nama_alat }}</h3>
+                        <h3 class="font-semibold text-gray-800 mb-2">Tenda Dome 4P</h3>
 
                         <div class="flex justify-between items-end">
                             <div>
                                 <p class="text-xs text-gray-500">MULAI DARI</p>
                                 <p class="text-green-800 font-bold text-lg">
-                                    Rp {{ number_format($alat->harga_per_hari, 0, ',', '.') }} <span class="text-sm text-gray-600">/hari</span>
+                                    Rp 50.000 <span class="text-sm text-gray-600">/hari</span>
                                 </p>
                             </div>
 
                             <div class="flex gap-2">
-                                <a href="{{ route('admin.produk.edit', $alat->id_alat) }}"
+                                <a href="/admin/produk/edit/1"
                                    class="bg-[#213B56] w-9 h-9 rounded-lg flex items-center justify-center hover:bg-slate-800"
                                    title="Edit Produk">
                                     <svg xmlns="http://www.w3.org/2000/svg" 
@@ -174,7 +157,8 @@
                                 </a>
 
                                 <button type="button"
-                                    onclick="openDeleteModal({{ $alat->id_alat }}, '{{ addslashes($alat->nama_alat) }}')"
+                                    onclick="openDeleteModal(this)"
+                                    data-nama="Tenda Dome 4P"
                                     class="bg-red-600 w-9 h-9 rounded-lg flex items-center justify-center hover:bg-red-700"
                                     title="Hapus Produk">
                                     <svg xmlns="http://www.w3.org/2000/svg" 
@@ -190,23 +174,313 @@
                         </div>
 
                         <p class="text-xs text-gray-500 mt-3">
-                            Stok: {{ $alat->stok }}
+                            Stok: 5
                         </p>
                     </div>
                 </div>
             </div>
-            @empty
-            <div class="col-span-3 text-center py-16 text-gray-400">
-                <p class="text-lg">Belum ada produk</p>
-                <a href="{{ route('admin.produk.tambah') }}" class="text-green-700 font-semibold hover:underline mt-2 inline-block">+ Tambah Produk Pertama</a>
+
+            <!-- PRODUK 2 -->
+            <div class="produk-item" data-kategori="tenda">
+                <div class="group bg-[#efefe9] rounded-xl shadow overflow-hidden hover:shadow-xl hover:-translate-y-1 transition duration-300">
+                    <img src="https://areioutdoorgear.co.id/wp-content/uploads/2023/11/WhatsApp-Image-2024-02-02-at-09.49.27-2.jpeg"
+                        class="w-full h-56 object-cover">
+
+                    <div class="p-4">
+                        <h3 class="font-semibold text-gray-800 mb-2">Tenda Tunnel 5-6P</h3>
+
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <p class="text-xs text-gray-500">MULAI DARI</p>
+                                <p class="text-green-800 font-bold text-lg">
+                                    Rp 70.000 <span class="text-sm text-gray-600">/hari</span>
+                                </p>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <a href="/admin/produk/edit/2"
+                                   class="bg-[#213B56] w-9 h-9 rounded-lg flex items-center justify-center hover:bg-slate-800"
+                                   title="Edit Produk">
+                                    <svg xmlns="http://www.w3.org/2000/svg" 
+                                        class="w-4 h-4 text-white" 
+                                        fill="none" 
+                                        viewBox="0 0 24 24" 
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                    </svg>
+                                </a>
+
+                                <button type="button"
+                                    onclick="openDeleteModal(this)"
+                                    data-nama="Tenda Tunnel 5-6P"
+                                    class="bg-red-600 w-9 h-9 rounded-lg flex items-center justify-center hover:bg-red-700"
+                                    title="Hapus Produk">
+                                    <svg xmlns="http://www.w3.org/2000/svg" 
+                                        class="w-4 h-4 text-white" 
+                                        fill="none" 
+                                        viewBox="0 0 24 24" 
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0H7m3-3h4a1 1 0 011 1v2H9V5a1 1 0 011-1z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-gray-500 mt-3">
+                            Stok: 5
+                        </p>
+                    </div>
+                </div>
             </div>
-            @endforelse
+
+            <!-- PRODUK 3 -->
+            <div class="produk-item" data-kategori="tas">
+                <div class="group bg-[#efefe9] rounded-xl shadow overflow-hidden hover:shadow-xl hover:-translate-y-1 transition duration-300">
+                    <img src="https://areioutdoorgear.co.id/wp-content/uploads/2023/06/WhatsApp-Image-2023-06-02-at-12.42.02.jpeg"
+                        class="w-full h-56 object-cover">
+
+                    <div class="p-4">
+                        <h3 class="font-semibold text-gray-800 mb-2">Carrier 40L Pro-Series</h3>
+
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <p class="text-xs text-gray-500">MULAI DARI</p>
+                                <p class="text-green-800 font-bold text-lg">
+                                    Rp 45.000 <span class="text-sm text-gray-600">/hari</span>
+                                </p>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <a href="/admin/produk/edit/3"
+                                   class="bg-[#213B56] w-9 h-9 rounded-lg flex items-center justify-center hover:bg-slate-800"
+                                   title="Edit Produk">
+                                    <svg xmlns="http://www.w3.org/2000/svg" 
+                                        class="w-4 h-4 text-white" 
+                                        fill="none" 
+                                        viewBox="0 0 24 24" 
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                    </svg>
+                                </a>
+
+                                <button type="button"
+                                    onclick="openDeleteModal(this)"
+                                    data-nama="Carrier 40L Pro-Series"
+                                    class="bg-red-600 w-9 h-9 rounded-lg flex items-center justify-center hover:bg-red-700"
+                                    title="Hapus Produk">
+                                    <svg xmlns="http://www.w3.org/2000/svg" 
+                                        class="w-4 h-4 text-white" 
+                                        fill="none" 
+                                        viewBox="0 0 24 24" 
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0H7m3-3h4a1 1 0 011 1v2H9V5a1 1 0 011-1z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-gray-500 mt-3">
+                            Stok: 10
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRODUK 4 -->
+            <div class="produk-item" data-kategori="tas">
+                <div class="group bg-[#efefe9] rounded-xl shadow overflow-hidden hover:shadow-xl hover:-translate-y-1 transition duration-300">
+                    <img src="https://areioutdoorgear.co.id/wp-content/uploads/2025/08/WhatsApp-Image-2025-06-19-at-11.16.56-2.jpeg"
+                        class="w-full h-56 object-cover">
+
+                    <div class="p-4">
+                        <h3 class="font-semibold text-gray-800 mb-2">Carrier 60L Pro-Series</h3>
+
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <p class="text-xs text-gray-500">MULAI DARI</p>
+                                <p class="text-green-800 font-bold text-lg">
+                                    Rp 55.000 <span class="text-sm text-gray-600">/hari</span>
+                                </p>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <a href="/admin/produk/edit/4"
+                                   class="bg-[#213B56] w-9 h-9 rounded-lg flex items-center justify-center hover:bg-slate-800"
+                                   title="Edit Produk">
+                                    <svg xmlns="http://www.w3.org/2000/svg" 
+                                        class="w-4 h-4 text-white" 
+                                        fill="none" 
+                                        viewBox="0 0 24 24" 
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                    </svg>
+                                </a>
+
+                                <button type="button"
+                                    onclick="openDeleteModal(this)"
+                                    data-nama="Carrier 60L Pro-Series"
+                                    class="bg-red-600 w-9 h-9 rounded-lg flex items-center justify-center hover:bg-red-700"
+                                    title="Hapus Produk">
+                                    <svg xmlns="http://www.w3.org/2000/svg" 
+                                        class="w-4 h-4 text-white" 
+                                        fill="none" 
+                                        viewBox="0 0 24 24" 
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0H7m3-3h4a1 1 0 011 1v2H9V5a1 1 0 011-1z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-gray-500 mt-3">
+                            Stok: 10
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRODUK 5 -->
+            <div class="produk-item" data-kategori="pakaian">
+                <div class="group bg-[#efefe9] rounded-xl shadow overflow-hidden hover:shadow-xl hover:-translate-y-1 transition duration-300">
+                    <img src="https://cdn-jpr.jawapos.com/images/27/2025/05/29/N01777-GORPCORE-Jacket-_-Distro-Motif-Parachute-Mountain-Jacket-1611688820.jpeg"
+                        class="w-full h-56 object-cover">
+
+                    <div class="p-4">
+                        <h3 class="font-semibold text-gray-800 mb-2">Jaket Outdoor Credifox Shield Series</h3>
+
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <p class="text-xs text-gray-500">MULAI DARI</p>
+                                <p class="text-green-800 font-bold text-lg">
+                                    Rp 30.000 <span class="text-sm text-gray-600">/hari</span>
+                                </p>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <a href="/admin/produk/edit/5"
+                                   class="bg-[#213B56] w-9 h-9 rounded-lg flex items-center justify-center hover:bg-slate-800"
+                                   title="Edit Produk">
+                                    <svg xmlns="http://www.w3.org/2000/svg" 
+                                        class="w-4 h-4 text-white" 
+                                        fill="none" 
+                                        viewBox="0 0 24 24" 
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                    </svg>
+                                </a>
+
+                                <button type="button"
+                                    onclick="openDeleteModal(this)"
+                                    data-nama="Jaket Outdoor Credifox Shield Series"
+                                    class="bg-red-600 w-9 h-9 rounded-lg flex items-center justify-center hover:bg-red-700"
+                                    title="Hapus Produk">
+                                    <svg xmlns="http://www.w3.org/2000/svg" 
+                                        class="w-4 h-4 text-white" 
+                                        fill="none" 
+                                        viewBox="0 0 24 24" 
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0H7m3-3h4a1 1 0 011 1v2H9V5a1 1 0 011-1z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-gray-500 mt-3">
+                            Stok: 9
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRODUK 6 -->
+            <div class="produk-item" data-kategori="pakaian">
+                <div class="group bg-[#efefe9] rounded-xl shadow overflow-hidden hover:shadow-xl hover:-translate-y-1 transition duration-300">
+                    <img src="https://ik.imagekit.io/tvlk/blog/2024/12/shutterstock_2083482538.jpg?tr=q-70,c-at_max,w-1000,h-600"
+                        class="w-full h-56 object-cover">
+
+                    <div class="p-4">
+                        <h3 class="font-semibold text-gray-800 mb-2">Sepatu Tracking Waterproof</h3>
+
+                        <div class="flex justify-between items-end">
+                            <div>
+                                <p class="text-xs text-gray-500">MULAI DARI</p>
+                                <p class="text-green-800 font-bold text-lg">
+                                    Rp 40.000 <span class="text-sm text-gray-600">/hari</span>
+                                </p>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <a href="/admin/produk/edit/6"
+                                   class="bg-[#213B56] w-9 h-9 rounded-lg flex items-center justify-center hover:bg-slate-800"
+                                   title="Edit Produk">
+                                    <svg xmlns="http://www.w3.org/2000/svg" 
+                                        class="w-4 h-4 text-white" 
+                                        fill="none" 
+                                        viewBox="0 0 24 24" 
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                    </svg>
+                                </a>
+
+                                <button type="button"
+                                    onclick="openDeleteModal(this)"
+                                    data-nama="Sepatu Tracking Waterproof"
+                                    class="bg-red-600 w-9 h-9 rounded-lg flex items-center justify-center hover:bg-red-700"
+                                    title="Hapus Produk">
+                                    <svg xmlns="http://www.w3.org/2000/svg" 
+                                        class="w-4 h-4 text-white" 
+                                        fill="none" 
+                                        viewBox="0 0 24 24" 
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m2 0H7m3-3h4a1 1 0 011 1v2H9V5a1 1 0 011-1z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-gray-500 mt-3">
+                            Stok: 5
+                        </p>
+                    </div>
+                </div>
+            </div>
 
         </div>
 
         <!-- PAGINATION -->
         <div class="flex justify-center items-center gap-2 mt-10 mb-16">
-            {{ $alats->links('pagination::simple-tailwind') }}
+            <button class="w-10 h-10 rounded-lg border bg-white hover:bg-gray-100">
+                &lt;
+            </button>
+
+            <a href="/admin/produk?page=1" 
+            class="w-10 h-10 flex items-center justify-center rounded-lg bg-green-800 text-white font-semibold">
+                1
+            </a>
+
+            <a href="/admin/produk?page=2" 
+            class="w-10 h-10 flex items-center justify-center rounded-lg border bg-white hover:bg-gray-100">
+                2
+            </a>
+
+            <a href="/admin/produk?page=3" 
+            class="w-10 h-10 flex items-center justify-center rounded-lg border bg-white hover:bg-gray-100">
+                3
+            </a>
+
+            <button class="w-10 h-10 rounded-lg border bg-white hover:bg-gray-100">
+                &gt;
+            </button>
         </div>
 
     </div>
@@ -250,10 +524,10 @@
     </div>
 
     <div class="border-t border-green-700 mt-10 pt-4 flex justify-between text-xs text-gray-300">
-        <span>&copy; 2026 PeakRent Editorial. The Modern Explorer.</span>
+        <span>© 2026 PeakRent Editorial. The Modern Explorer.</span>
         <div class="flex gap-6">
             <span>Kebijakan Privasi</span>
-            <span>Syarat &amp; Ketentuan</span>
+            <span>Syarat & Ketentuan</span>
         </div>
     </div>
 </footer>
@@ -267,7 +541,7 @@
         <!-- CLOSE -->
         <button onclick="closeDeleteModal()" 
             class="absolute top-4 right-5 text-gray-500 hover:text-gray-800 text-xl">
-            &times;
+            ×
         </button>
 
         <!-- ICON WARNING -->
@@ -282,21 +556,16 @@
 
         <!-- DESCRIPTION -->
         <p class="text-sm text-gray-600 leading-relaxed mb-6">
-            Kamu yakin ingin menghapus produk <strong id="deleteNamaProduk"></strong>?
+            Kamu yakin ingin menghapus produk ini?
             <br>
             Data yang sudah dihapus tidak dapat dikembalikan.
         </p>
 
-        <!-- FORM HAPUS -->
-        <form id="deleteForm" method="POST">
-            @csrf
-            @method('DELETE')
-
-            <button type="submit"
-                class="w-full bg-red-600 text-white py-3 rounded-lg text-sm font-bold hover:bg-red-700 transition">
-                Ya, Hapus
-            </button>
-        </form>
+        <!-- BUTTON HAPUS -->
+        <button onclick="hapusProduk()"
+            class="w-full bg-red-600 text-white py-3 rounded-lg text-sm font-bold hover:bg-red-700 transition">
+            Ya, Hapus
+        </button>
 
         <!-- BATAL -->
         <button onclick="closeDeleteModal()"
@@ -324,17 +593,10 @@ function filterProduk() {
     });
 }
 
-function searchProduk() {
-    let keyword = document.getElementById('searchInput').value.toLowerCase();
-    document.querySelectorAll('.produk-item').forEach(item => {
-        let nama = item.dataset.nama || '';
-        item.style.display = nama.includes(keyword) ? '' : 'none';
-    });
-}
+let produkYangDihapus = null;
 
-function openDeleteModal(id, nama) {
-    document.getElementById('deleteNamaProduk').textContent = nama;
-    document.getElementById('deleteForm').action = '{{ url("/admin/produk/hapus") }}/' + id;
+function openDeleteModal(button) {
+    produkYangDihapus = button.closest('.produk-item');
 
     const modal = document.getElementById('deleteModal');
     modal.classList.remove('hidden');
@@ -345,6 +607,14 @@ function closeDeleteModal() {
     const modal = document.getElementById('deleteModal');
     modal.classList.add('hidden');
     modal.classList.remove('flex');
+}
+
+function hapusProduk() {
+    if (produkYangDihapus) {
+        produkYangDihapus.remove();
+    }
+
+    closeDeleteModal();
 }
 </script>
 

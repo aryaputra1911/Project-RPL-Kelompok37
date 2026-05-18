@@ -1,0 +1,16 @@
+[33mcommit 2b285e935ea2bab3d85b73899c67d149aa4961ee[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Merge: 3725cae 0f843da
+Author: rositasasaa <rosiebilla8@gmail.com>
+Date:   Thu May 14 12:57:55 2026 +0700
+
+    resolve conflict
+
+ package-lock.json                                  | 2487 [32m++++++++++++++++++++[m
+ resources/views/Frontend Admin/dashboard.blade.php |  416 [32m++++[m
+ .../views/Frontend Admin/editproduk.blade.php      |  315 [32m+++[m
+ .../views/Frontend Admin/loginadmin.blade.php      |  175 [32m++[m
+ resources/views/Frontend Admin/pesanan.blade.php   |  344 [32m+++[m
+ resources/views/Frontend Admin/produk.blade.php    |  622 [32m+++++[m
+ .../views/Frontend Admin/tambahproduk.blade.php    |  398 [32m++++[m
+ routes/web.php                                     |  121 [32m+[m[31m-[m
+ 8 files changed, 4877 insertions(+), 1 deletion(-)
