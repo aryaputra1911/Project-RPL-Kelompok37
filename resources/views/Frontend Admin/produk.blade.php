@@ -137,7 +137,7 @@
             @forelse($alats as $alat)
             <div class="produk-item" data-nama="{{ strtolower($alat->nama_alat) }}">
                 <div class="group bg-[#efefe9] rounded-xl shadow overflow-hidden hover:shadow-xl hover:-translate-y-1 transition duration-300">
-                    <img src="{{ $alat->foto ? asset('storage/' . $alat->foto) : 'https://via.placeholder.com/400x300?text=No+Image' }}"
+                    <img src="{{ $alat->foto_url }}"
                         class="w-full h-56 object-cover"
                         onerror="this.src='https://via.placeholder.com/400x300?text=No+Image'">
 

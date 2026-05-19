@@ -24,4 +24,21 @@ class Alat extends Model
     {
         return $this->hasMany(DetailPemesanan::class, 'Alat_id_alat', 'id_alat');
     }
+
+    /**
+     * Kembalikan URL foto yang benar:
+     * - Jika foto adalah URL penuh (Cloudinary), kembalikan langsung
+     * - Jika foto adalah path lokal, kembalikan via asset('storage/...')
+     * - Jika null, kembalikan placeholder
+     */
+    public function getFotoUrlAttribute(): string
+    {
+        if (!$this->foto) {
+            return 'https://via.placeholder.com/400x300?text=No+Image';
+        }
+        if (str_starts_with($this->foto, 'http')) {
+            return $this->foto;
+        }
+        return asset('storage/' . $this->foto);
+    }
 }

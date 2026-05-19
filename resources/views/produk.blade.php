@@ -161,7 +161,7 @@
             'id' => $alat->id_alat,
             'nama' => $alat->nama_alat,
             'harga' => 'Rp ' . number_format($alat->harga_per_hari, 0, ',', '.'),
-            'img' => $alat->foto ? asset('storage/' . $alat->foto) : 'https://via.placeholder.com/300',
+            'img' => $alat->foto_url,
             'desc' => $alat->deskripsi ?? '',
             'brand' => '-',
             'berat' => '-',

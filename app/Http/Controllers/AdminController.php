@@ -118,14 +118,19 @@ class AdminController extends Controller
         ]);
 
         $data = [
-            'nama_alat'     => $request->nama_produk,
-            'harga_per_hari'=> $request->harga,
-            'deskripsi'     => $request->deskripsi,
-            'stok'          => $request->stok,
+            'nama_alat'      => $request->nama_produk,
+            'harga_per_hari' => $request->harga,
+            'deskripsi'      => $request->deskripsi,
+            'stok'           => $request->stok,
         ];
 
         if ($request->hasFile('gambar')) {
-            $data['foto'] = $request->file('gambar')->store('produk', 'public');
+            $file     = $request->file('gambar');
+            $filename = 'peakrent/produk/' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+            Storage::disk('cloudinary')->writeStream($filename, fopen($file->getRealPath(), 'r'), []);
+
+            $data['foto'] = Storage::disk('cloudinary')->url($filename);
         }
 
         Alat::create($data);
@@ -158,10 +163,22 @@ class AdminController extends Controller
 
         if ($request->hasFile('gambar')) {
             // Hapus foto lama jika ada
-            if ($alat->foto && Storage::disk('public')->exists($alat->foto)) {
+            if ($alat->foto && str_contains($alat->foto, 'cloudinary.com')) {
+                // Ekstrak public_id dari URL Cloudinary untuk dihapus
+                preg_match('/peakrent\/produk\/[^.\/]+/', $alat->foto, $matches);
+                if (!empty($matches[0])) {
+                    try { Storage::disk('cloudinary')->delete($matches[0]); } catch (\Throwable $e) {}
+                }
+            } elseif ($alat->foto && Storage::disk('public')->exists($alat->foto)) {
                 Storage::disk('public')->delete($alat->foto);
             }
-            $alat->foto = $request->file('gambar')->store('produk', 'public');
+
+            $file     = $request->file('gambar');
+            $filename = 'peakrent/produk/' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+            Storage::disk('cloudinary')->writeStream($filename, fopen($file->getRealPath(), 'r'), []);
+
+            $alat->foto = Storage::disk('cloudinary')->url($filename);
         }
 
         $alat->save();
@@ -173,8 +190,15 @@ class AdminController extends Controller
     {
         $alat = Alat::findOrFail($id);
 
-        if ($alat->foto && Storage::disk('public')->exists($alat->foto)) {
-            Storage::disk('public')->delete($alat->foto);
+        if ($alat->foto) {
+            if (str_contains($alat->foto, 'cloudinary.com')) {
+                preg_match('/peakrent\/produk\/[^.\/]+/', $alat->foto, $matches);
+                if (!empty($matches[0])) {
+                    try { Storage::disk('cloudinary')->delete($matches[0]); } catch (\Throwable $e) {}
+                }
+            } elseif (Storage::disk('public')->exists($alat->foto)) {
+                Storage::disk('public')->delete($alat->foto);
+            }
         }
 
         $alat->delete();

@@ -99,7 +99,7 @@
             <div class="lg:col-span-2">
 
                 <img id="previewGambar"
-                     src="{{ $alat->foto ? asset('storage/' . $alat->foto) : 'https://via.placeholder.com/400x360?text=No+Image' }}"
+                     src="{{ $alat->foto_url }}"
                      class="w-full h-[360px] object-cover rounded-lg">
 
                 <div class="grid grid-cols-2 gap-4 mt-6">
